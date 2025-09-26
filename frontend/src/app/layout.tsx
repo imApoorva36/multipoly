@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import PrivyProviders from "@/providers/WalletProvider";
+import HuddleProviders from "@/providers/HuddleProvider";
 
 export const metadata: Metadata = {
   title: "Multipoly",
@@ -17,7 +18,11 @@ export default function RootLayout({
       <body
         className="antialiased"
       >
-        <PrivyProviders>{children}</PrivyProviders>
+        <PrivyProviders>
+          <HuddleProviders>
+            {children}
+          </HuddleProviders>
+        </PrivyProviders>
       </body>
     </html>
   );
