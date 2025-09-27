@@ -7,9 +7,7 @@ import { Badge } from "../ui/badge"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card"
 import { UserIcon } from "@heroicons/react/16/solid"
 import { useWallets } from "@privy-io/react-auth"
-import Image from "next/image"
 import { getPfp } from "@/lib/utils"
-import { resolveMetadata } from "next/dist/lib/metadata/resolve-metadata"
 
 export default function PlayersSection ({ participants }: { participants: string[] }) {
     const params = useParams<{ id: string }>();

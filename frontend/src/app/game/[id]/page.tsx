@@ -42,9 +42,32 @@ export default function MonopolyBoard() {
         sendData
     } = useHuddleRoom(roomId);
 
-    let { peerId: myId } = useLocalPeer()
+    let { updateMetadata, metadata, peerId: myId } = useLocalPeer<{name: string, image: string}>()
 
     const [ participants, setParticipants ] = useState<string[]>([myId as string])
+
+    useEffect(() => {
+        if (!roomId) {
+            return;
+        }
+    
+        if (state === "connected") {
+            if (metadata?.name) return
+            updateMetadata({
+                name: wallet.address.slice(0, 6) + "..." + wallet.address.slice(-4),
+                image: "https://api.dicebear.com/9.x/identicon/svg?seed=" + wallet.address
+            })
+            return
+        }
+    
+        if (isFetchingToken || isJoiningRoom) {
+            return;
+        }
+    
+        joinRoom().catch((error) => {
+            console.error("Failed to join room", error);
+        });
+        }, [roomId, state, isJoiningRoom, isFetchingToken, joinRoom]);
 
     useEffect(() => {
         setMounted(true);
@@ -147,7 +170,7 @@ export default function MonopolyBoard() {
         <SidebarProvider>
             <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex flex-row">
                 {/* Sidebar on the left */}
-                <AppSidebar participants={participants} />
+                <AppSidebar participants={participants} sendMessage={sendMessage} messages={messages} state={state} isSendingMessage={isSendingMessage} />
                 {/* Main content */}
                 <main className="flex-1 bg-[url('/delhi-bg.png')] flex flex-col items-center justify-center p-6 relative">
                     <div className="relative" style={{ perspective: "1200px" }}>
