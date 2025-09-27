@@ -1,53 +1,202 @@
 # 🎯 Multipoly
 
-**🏆 ETHGlobal New Delhi 2025 Submission**
+> A submission for ETHGlobal New Delhi 2025 by Team Multipoly
 
-> An educational blockchain-powered multiplayer board game set in Delhi, featuring AI agents, NFT properties, and real-time strategy gameplay.
+## Overview
 
-## 🚀 **Live Demo**
+Multipoly is a blockchain-powered multiplayer board game set in Delhi, featuring AI agents, NFT properties, and real-time strategy gameplay. Players navigate through 24 iconic Delhi locations, collect themed tokens, and build their property empire using Web3 technology and AI-powered assistance.
 
-**🌐 Main Application**: [https://multipoly.onrender.com](https://multipoly.onrender.com)
+We're proud to be building with and applying for the following sponsor tracks:
 
-## 👥 **Meet the Team**
+- **Flow Blockchain** - Cadence smart contracts for game mechanics
+- **ASI Alliance** - AI agent ecosystem for strategic gameplay assistance
+- **ENS** - Decentralized naming and identity system
 
-| Team Member         | GitHub                                           |
-| ------------------- | ------------------------------------------------ |
-| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) |
-| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   |
-| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) |
-| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   |
+## System Architecture
 
-## 🎮 **Game Overview**
+![System Architecture](arch_diag.jpg)
 
-Multipoly transforms the beloved board game experience into a cutting-edge Web3 application. Set against the backdrop of Delhi's iconic landmarks, players navigate through 24 carefully curated locations.
+## Core Features
 
-### **🌟 Key Features**
+### Game Mechanics
 
-- **🏛️ Delhi-Themed Board**: 24 authentic Delhi locations from Red Fort to Cyber City
-- **🤖 AI-Powered Assistance**: Smart agents for gameplay guidance and chat
-- **⛓️ Blockchain Foundation**: NFT properties with real ownership and trading
-- **📱 Real-Time Multiplayer**: WebRTC-powered seamless gaming experience
+- **24 Delhi Locations**: From historical Red Fort to modern Cyber City Gurgaon
+- **4 Token Categories**: Heritage (Red), Business (Blue), Education (Green), Entertainment (Yellow)
+- **Property Ownership**: NFT-based property trading and management
+- **Strategic Gameplay**: AI-powered move recommendations and game analysis
 
-## 🔗 **API Endpoints**
+### AI-Powered Assistance
 
-### **Health Check**
+- **Chatbot Agent**: General gameplay guidance and rule explanations
+- **Tutor Agent**: Strategic advice and optimal move recommendations
+- **Knowledge Graph**: MeTTa-based game state analysis and pattern recognition
+- **Real-time Strategy**: Dynamic gameplay adaptation based on player behavior
+
+### Multiplayer Features
+
+- **Real-time Gameplay**: WebRTC-powered peer-to-peer communication
+- **Room Management**: Private game lobbies with video chat integration
+- **Live Sync**: Synchronized game state across all players
+- **Cross-platform**: Responsive design for desktop and mobile
+
+### Blockchain Integration
+
+- **Property NFTs**: ERC-721 tokens representing Delhi landmarks
+- **Game Tokens**: ERC-20 tokens for different location categories
+- **Verifiable Randomness**: Chainlink VRF for fair dice rolls
+- **Multi-chain Support**: Ethereum testnet with Flow blockchain integration
+
+## Technology Stack
+
+### ASI Alliance Implementation
+
+We leverage the ASI Alliance ecosystem for our AI agent infrastructure:
+
+- **Chatbot Agent**: General assistance and gameplay guidance using ASI:One models
+- **Strategic Tutor Agent**: Advanced game analysis and move recommendations
+- **Knowledge Graph Agent**: MeTTa-powered game state management and learning
+- **Real-time Decision Making**: AI-driven gameplay optimization
+
+### Flow Blockchain Integration
+
+Our Cadence smart contracts handle:
+
+- **Game State Management**: Persistent game progress and player statistics
+- **Token Economics**: Yield token system for property rewards
+- **Transaction Processing**: Secure and efficient blockchain operations
+- **Multi-player Coordination**: Decentralized game room management
+
+### ENS Integration
+
+Decentralized identity features:
+
+- **Player Profiles**: ENS-based player identification
+- **Leaderboards**: Community rankings with ENS names
+- **Social Features**: ENS-resolved player interactions
+- **Achievement System**: ENS-linked accomplishment tracking
+
+### Additional Technologies
+
+- **Frontend**: Next.js 14, Tailwind CSS, shadcn/ui components
+- **Backend**: Python Flask API with CORS-enabled endpoints
+- **Real-time Communication**: WebRTC for video chat and game synchronization
+- **AI Models**: ASI:One integration with fallback mechanisms
+- **Smart Contracts**: Solidity on Ethereum, Cadence on Flow
+
+## API Endpoints
+
+### Health & Status
 
 ```bash
+# Application health check
 GET https://multipoly.onrender.com/health
+
+# Agent information and status
+GET https://multipoly.onrender.com/agents/info
 ```
 
-### **Chat with AI**
+### AI Agent Interactions
 
 ```bash
+# Chat with gameplay assistant
 POST https://multipoly.onrender.com/api/chat
 Content-Type: application/json
-
 {
-  "message": "Hello, how do I play?"
+  "message": "How do I win at Multipoly?",
+  "user_id": "player123"
+}
+
+# Get strategic advice
+POST https://multipoly.onrender.com/api/advise
+Content-Type: application/json
+{
+  "state": {"position": 5, "tokens": {"red": 3}},
+  "question": "Should I buy Red Fort?",
+  "user_id": "player123"
 }
 ```
 
-### **Get Game Advice**
+## Game Rules
+
+### Victory Conditions
+
+- **Token Master**: Collect 15+ tokens of any combination
+- **Property Mogul**: Own 8+ properties across different groups
+- **Delhi Emperor**: Achieve 10,000+ cash + property value
+
+### Delhi Location Groups
+
+**🔴 Heritage Sites (Red Tokens)**
+
+- Red Fort, Qutub Minar, Humayun's Tomb, India Gate, Lotus Temple, Akshardham
+
+**🔵 Business Hubs (Blue Tokens)**
+
+- Connaught Place, Cyber City Gurgaon, Nehru Place, Karol Bagh, Lajpat Nagar, Khan Market
+
+**🟢 Education Centers (Green Tokens)**
+
+- Delhi University, JNU, IIT Delhi, National Museum, Pragati Maidan, Raj Ghat
+
+**🟡 Entertainment Districts (Yellow Tokens)**
+
+- Chandni Chowk, Sarojini Nagar, Dilli Haat, Select City Walk, Hauz Khas Village, CP Metro
+
+## Installation & Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/imApoorva36/multipoly.git
+   ```
+
+2. Setup AI Agents Backend:
+
+   ```bash
+   cd agents
+   pip install -r requirements.txt
+   cp example.env .env  # Add your API keys
+   python start.py
+   ```
+
+3. Setup Frontend:
+
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+4. Setup Smart Contracts:
+   ```bash
+   cd multipoly_contract
+   npm install
+   npx hardhat compile
+   npx hardhat deploy
+   ```
+
+## Team
+
+| Team Member         | GitHub                                           | Role                         |
+| ------------------- | ------------------------------------------------ | ---------------------------- |
+| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) | Smart Contracts & Full-Stack |
+| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   | AI Agents & Backend          |
+| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) | Frontend & UI/UX             |
+| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   | Blockchain & VRF             |
+
+## Contributing
+
+We welcome contributions from the community! Feel free to fork the repo, open issues, and submit pull requests.
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+### 🎮 Experience the future of board games with Web3 and AI!
+
+**Live Demo**: [https://multipoly.onrender.com](https://multipoly.onrender.com)
 
 ```bash
 POST https://multipoly.onrender.com/api/advise
