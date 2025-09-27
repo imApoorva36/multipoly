@@ -6,13 +6,17 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import Image from "next/image";
 import { ArrowLeftCircle, BadgeQuestionMark, CoinsIcon, Globe2 } from "lucide-react";
-import { EIP1193Provider, useWallets } from "@privy-io/react-auth"
-import { createWalletClient, custom, Hex, WalletClient } from "viem"
-import { testnet } from "@/providers/WalletProvider"
+import { useWallets } from "@privy-io/react-auth"
 import { useHuddleRoom } from "@/hooks/useHuddleRoom"
 import { useParams } from "next/navigation"
-import { useLocalPeer, useRemotePeer } from "@huddle01/react"
+import { useDataMessage, useLocalPeer, useRemotePeer } from "@huddle01/react/hooks"
 import { FireIcon } from "@heroicons/react/16/solid";
+import PlayerPeg from "@/components/game/PlayerPeg";
+
+// Define the type for metadata
+export interface Metadata {
+  name: string;
+}
 
 export default function MonopolyBoard() {
     const [mounted, setMounted] = useState(false);
@@ -22,29 +26,32 @@ export default function MonopolyBoard() {
     const [scale, setScale] = useState(1);
 
     const { wallets } = useWallets()
-    const wallet = wallets[0]
 
     const params = useParams()
     const roomId = typeof params?.id === "string" ? params.id : null
-
+    
     const {
         state,
-        messages,
-        peerIds,
-        leaveRoom,
-        joinRoom,
-        isJoiningRoom,
-        joinError,
-        sendMessage,
-        isSendingMessage,
-        isFetchingToken,
-        tokenError,
-        sendData
+        peerIds
     } = useHuddleRoom(roomId);
 
-    let { peerId: myId } = useLocalPeer()
+    const { peerId: myId } = useLocalPeer<Metadata>()
 
-    const [ participants, setParticipants ] = useState<string[]>([myId as string])
+    // Initialize with empty array, we'll add peers once they're available
+    const [ participants, setParticipants ] = useState<string[]>([])
+
+    // Handle player positions and data sync
+    useDataMessage({
+        onMessage: (payload, from, label) => {
+            if (label === 'game-state' || label === 'player-move' || label === 'turn-advance') {
+                // This is handled in the play component
+                // Just rerendering due to state updates from the game store
+                
+                // We can add additional visual feedback for state changes here if needed
+                // e.g., animations or notifications when turns change
+            }
+        }
+    });
 
     useEffect(() => {
         setMounted(true);
@@ -71,18 +78,46 @@ export default function MonopolyBoard() {
     }, []);
 
 
+    // First effect to add local peer when it becomes available
+    useEffect(() => {
+        if (myId) {
+            setParticipants(current => {
+                if (!current.includes(myId)) {
+                    return [...current, myId];
+                }
+                return current;
+            });
+        }
+    }, [myId]);
+
+    // Second effect to add remote peers when connection state changes
     useEffect(() => {
         if (state !== 'connected') return
 
-        let newParticipants = [...participants]
-        for (let id of peerIds) {
-            if (!newParticipants.includes(id)) {
-                newParticipants.push(id)
+        // Use a functional state update to avoid dependency on participants
+        setParticipants(currentParticipants => {
+            const newParticipants = [...currentParticipants]
+            let hasChanged = false
+            
+            // Make sure local peer is included
+            if (myId && !newParticipants.includes(myId)) {
+                newParticipants.push(myId)
+                hasChanged = true
             }
-        }
-        setParticipants(newParticipants)
+            
+            // Add all remote peers
+            for (const id of peerIds) {
+                if (!newParticipants.includes(id)) {
+                    newParticipants.push(id)
+                    hasChanged = true
+                }
+            }
+            
+            // Only return a new array if we actually added participants
+            return hasChanged ? newParticipants : currentParticipants
+        })
 
-    }, [state, peerIds])
+    }, [state, peerIds, myId]) // Include myId in dependencies
 
 
     const renderProperty = (property: Property, index: number) => {

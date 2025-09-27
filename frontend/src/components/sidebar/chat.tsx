@@ -8,7 +8,6 @@ import { ChatBubbleLeftIcon } from "@heroicons/react/16/solid"
 import { Input } from "../ui/input"
 import { useEffect, useState } from "react"
 import { useWallets } from "@privy-io/react-auth"
-import { Separator } from "../ui/separator"
 
 
 
@@ -150,7 +149,7 @@ export default function ChatSection () {
                 </div>
                 
                 {(tokenError || joinError) && (
-                    <div className="bg-mred/20 border-2 border-mred rounded-none p-3 mt-2">
+                    <div className="bg-mred/20 border-1 border-mred rounded-none p-3 mt-2">
                         <p className="text-sm text-mred font-bold">
                             ❌ {(tokenError ?? joinError)?.message}
                         </p>
@@ -160,7 +159,7 @@ export default function ChatSection () {
             
             <div className="flex-1 flex flex-col space-y-4 p-4 pt-0 h-full overflow-hidden">
               {/* Messages Container */}
-              <div className="flex-1 overflow-hidden border-2 border-black rounded-none bg-gradient-to-br from-slate-50 to-slate-100">
+              <div className="flex-1 overflow-hidden border-1 border-black rounded-none bg-gradient-to-br from-slate-50 to-slate-100">
                 <div className="h-full overflow-y-auto p-4 scroll-smooth" id="messages-container">
                   {messages.length > 0 ? (
                     <div className="space-y-4">
