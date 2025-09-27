@@ -6,6 +6,9 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import Image from "next/image";
 import { BadgeQuestionMark, Globe2 } from "lucide-react";
+import { EIP1193Provider, useWallets } from "@privy-io/react-auth"
+import { createWalletClient, custom, Hex, WalletClient } from "viem"
+import { testnet } from "@/providers/WalletProvider"
 
 export default function MonopolyBoard() {
     const [mounted, setMounted] = useState(false);
@@ -13,6 +16,12 @@ export default function MonopolyBoard() {
     const [rotationY, setRotationY] = useState(0);
     const [rotationZ, setRotationZ] = useState(0);
     const [scale, setScale] = useState(1);
+
+    const [ provider, setProvider ] = useState<EIP1193Provider | null>(null)
+    const [ walletClient, setWalletClient ] = useState<WalletClient | null>(null)
+
+    let { wallets } = useWallets()
+    let wallet = wallets[0]
 
     useEffect(() => {
         setMounted(true);
@@ -37,6 +46,22 @@ export default function MonopolyBoard() {
             };
         }
     }, []);
+
+    useEffect(() => {
+        async function getWalletClient () {
+            let p = await wallet.getEthereumProvider()
+            let wc = createWalletClient({
+                account: wallet.address as Hex,
+                chain: testnet,
+                transport: custom(p)
+            })
+            setProvider(p)
+            setWalletClient(wc)
+        }
+        getWalletClient()
+
+    }, [ wallet ])
+
 
     const renderProperty = (property: MonopolyProperty, index: number) => {
         const { style, orientation, isCorner } = getPropertyPosition(index, property);
@@ -100,7 +125,7 @@ export default function MonopolyBoard() {
         <SidebarProvider>
             <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex flex-row">
                 {/* Sidebar on the left */}
-                <AppSidebar />
+                <AppSidebar walletClient = {walletClient} />
                 {/* Main content */}
                 <main className="flex-1 bg-[url('/delhi-bg.png')] flex flex-col items-center justify-center p-6 relative">
                     <div className="relative" style={{ perspective: "1200px" }}>

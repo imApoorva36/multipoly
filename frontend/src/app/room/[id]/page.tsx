@@ -13,9 +13,9 @@ import { ChatPanel } from "@/components/room/ChatPanel";
 import { PlayersList } from "@/components/room/PlayersList";
 import { AuthenticationScreen } from "@/components/room/AuthenticationScreen";
 
-interface Metadata {
-  name: string;
-  image: string;
+export interface Metadata {
+  name: string
+  image: string
 }
 
 function getRoomIdParam(param: string | string[] | undefined): string | null {
