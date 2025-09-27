@@ -61,12 +61,17 @@ contract Multipoly is Ownable {
     }
 
     struct PlayerProperties {
-        address user_account;
-        uint256 game_id;
         uint256 nft_id;
         uint256 stake_amount;
         address token;
+        bool exists;
     }
+
+    mapping(uint256 => mapping(address => mapping(uint256 => PlayerProperties)))
+        public playerProperties;
+    // gameId => user => nftId => properties
+    mapping(uint256 => mapping(address => uint256[])) private userNFTs;
+    // gameId => user => list of nftIds
 
     // Mappings
     // For PlayerPos: game_id => user_account => PlayerPos
@@ -74,10 +79,6 @@ contract Multipoly is Ownable {
 
     // For PlayerTurn: game_id => PlayerTurn
     mapping(uint256 => address) public playerTurns;
-
-    // For PlayerProperties: user_account => game_id => PlayerProperties
-    mapping(address => mapping(uint256 => PlayerProperties))
-        public playerProperties;
 
     // Additional helper mappings
     mapping(uint256 => address[]) public gamePlayersList; // game_id => array of players
@@ -115,7 +116,10 @@ contract Multipoly is Ownable {
         _;
     }
 
-    constructor(address initialOwner, address _property_nft) Ownable(initialOwner) {
+    constructor(
+        address initialOwner,
+        address _property_nft
+    ) Ownable(initialOwner) {
         PROPERTY_NFT = _property_nft;
     }
 
@@ -213,34 +217,43 @@ contract Multipoly is Ownable {
 
     // ========== PLAYER PROPERTIES CRUD OPERATIONS ==========
 
-    function setPlayerProperties(
-        address user_account,
+    function setPlayerProperty(
         uint256 game_id,
+        address user_account,
         uint256 nft_id
     ) internal validAddress(user_account) {
         require(isPlayerInGame[game_id][user_account], "Player not in game");
 
-        playerProperties[user_account][game_id] = PlayerProperties({
-            user_account: user_account,
-            game_id: game_id,
+        if (!playerProperties[game_id][user_account][nft_id].exists) {
+            userNFTs[game_id][user_account].push(nft_id);
+        }
+
+        playerProperties[game_id][user_account][nft_id] = PlayerProperties({
             nft_id: nft_id,
             stake_amount: 0,
-            token: address(0)
+            token: address(0),
+            exists: true
         });
 
         emit PlayerPropertiesSet(user_account, game_id, nft_id, 0, address(0));
     }
 
-    function getPlayerProperties(
+    function getPlayerProperty(
+        uint256 game_id,
         address user_account,
-        uint256 game_id
+        uint256 nft_id
     ) external view returns (PlayerProperties memory) {
-        return playerProperties[user_account][game_id];
+        require(
+            playerProperties[game_id][user_account][nft_id].exists,
+            "Property not found"
+        );
+        return playerProperties[game_id][user_account][nft_id];
     }
 
     function updatePlayerStakeAmount(
-        address user_account,
         uint256 game_id,
+        address user_account,
+        uint256 nft_id,
         uint256 new_stake_amount,
         address new_token_address
     ) external playerInGame(game_id, user_account) {
@@ -249,54 +262,39 @@ contract Multipoly is Ownable {
             "Unauthorized"
         );
 
-        playerProperties[user_account][game_id].stake_amount = new_stake_amount;
-        playerProperties[user_account][game_id].token = new_token_address;
+        PlayerProperties storage prop = playerProperties[game_id][user_account][
+            nft_id
+        ];
+        require(prop.exists, "Property not found");
+
+        prop.stake_amount = new_stake_amount;
+        prop.token = new_token_address;
 
         emit PlayerPropertiesSet(
             user_account,
             game_id,
-            playerProperties[user_account][game_id].nft_id,
+            nft_id,
             new_stake_amount,
-            playerProperties[user_account][game_id].token
+            new_token_address
         );
     }
 
-    function updatePlayerNFT(
-        address user_account,
+    function deletePlayerProperty(
         uint256 game_id,
-        uint256 new_nft_id,
-        address nft_contract
-    ) external playerInGame(game_id, user_account) {
-        require(
-            msg.sender == owner() || msg.sender == user_account,
-            "Unauthorized"
-        );
-
-        require(
-            IPropertyNFT(nft_contract)._ownerOf(new_nft_id) == user_account,
-            "User does not own NFT"
-        );
-
-        playerProperties[user_account][game_id].nft_id = new_nft_id;
-        emit PlayerPropertiesSet(
-            user_account,
-            game_id,
-            new_nft_id,
-            playerProperties[user_account][game_id].stake_amount,
-            playerProperties[user_account][game_id].token
-        );
-    }
-
-    function deletePlayerProperties(
         address user_account,
-        uint256 game_id
+        uint256 nft_id
     ) external playerInGame(game_id, user_account) {
         require(
             msg.sender == owner() || msg.sender == user_account,
             "Unauthorized"
         );
 
-        delete playerProperties[user_account][game_id];
+        require(
+            playerProperties[game_id][user_account][nft_id].exists,
+            "Property not found"
+        );
+
+        delete playerProperties[game_id][user_account][nft_id];
     }
 
     // ========== HELPER FUNCTIONS ==========
@@ -343,7 +341,7 @@ contract Multipoly is Ownable {
 
     function getGamePlayers(
         uint256 game_id
-    ) external view returns (address[] memory) {
+    ) public view returns (address[] memory) {
         return gamePlayersList[game_id];
     }
 
@@ -493,7 +491,7 @@ contract Multipoly is Ownable {
             token_address,
             purchase_value
         );
-        setPlayerProperties(player_address, game_id, nftId);
+        setPlayerProperty(game_id, player_address, nftId);
         setPlayerTurn(game_id, next_player);
     }
 
@@ -502,8 +500,6 @@ contract Multipoly is Ownable {
     ) external view returns (IPropertyNFT.Property memory) {
         return IPropertyNFT(PROPERTY_NFT).getProperty(token_id);
     }
-
-    
 
     // Helper Functions
 
@@ -543,5 +539,45 @@ contract Multipoly is Ownable {
         } else {
             setPlayerTurn(game_id, next_player);
         }
+    }
+
+    function getAllPlayerProperties(
+        uint256 game_id,
+        address user_account
+    ) public view returns (PlayerProperties[] memory) {
+        uint256[] memory nfts = userNFTs[game_id][user_account];
+        PlayerProperties[] memory props = new PlayerProperties[](nfts.length);
+
+        for (uint256 i = 0; i < nfts.length; i++) {
+            props[i] = playerProperties[game_id][user_account][nfts[i]];
+        }
+
+        return props;
+    }
+
+    function getGameState(
+        uint256 game_id,
+        address user_account
+    )
+        external
+        view
+        returns (
+            PlayerPos[] memory, // list of player - positions pairs
+            PlayerProperties[] memory // properties of the user
+        )
+    {
+        address[] memory players = getGamePlayers(game_id);
+        PlayerPos[] memory positions = new PlayerPos[](players.length);
+        for (uint256 i = 0; i < players.length; i++) {
+            positions[i] = playerPositions[game_id][players[i]];
+        }
+        PlayerProperties[] memory user_props = getAllPlayerProperties(
+            game_id,
+            user_account
+        );
+        return (
+            positions,
+            user_props
+        );
     }
 }

@@ -112,5 +112,72 @@ def health_check():
     }, 200
 
 
+# Direct agent proxy routes for external access
+@app.route(
+    "/agents/chatbot/<path:path>", methods=["GET", "POST", "PUT", "DELETE"]
+)
+def proxy_chatbot(path):
+    """Proxy requests to chatbot agent"""
+    import requests
+
+    url = f"http://127.0.0.1:8010/{path}"
+
+    if request.method == "GET":
+        resp = requests.get(url, params=request.args)
+    elif request.method == "POST":
+        resp = requests.post(url, json=request.get_json(), params=request.args)
+    elif request.method == "PUT":
+        resp = requests.put(url, json=request.get_json(), params=request.args)
+    elif request.method == "DELETE":
+        resp = requests.delete(url, params=request.args)
+
+    return resp.content, resp.status_code, resp.headers.items()
+
+
+@app.route(
+    "/agents/tutor/<path:path>", methods=["GET", "POST", "PUT", "DELETE"]
+)
+def proxy_tutor(path):
+    """Proxy requests to tutor agent"""
+    import requests
+
+    url = f"http://127.0.0.1:8011/{path}"
+
+    if request.method == "GET":
+        resp = requests.get(url, params=request.args)
+    elif request.method == "POST":
+        resp = requests.post(url, json=request.get_json(), params=request.args)
+    elif request.method == "PUT":
+        resp = requests.put(url, json=request.get_json(), params=request.args)
+    elif request.method == "DELETE":
+        resp = requests.delete(url, params=request.args)
+
+    return resp.content, resp.status_code, resp.headers.items()
+
+
+# Agent info endpoints
+@app.route("/agents/info")
+def agents_info():
+    return {
+        "chatbot": {
+            "name": "multipoly-chatbot",
+            "port": 8010,
+            "endpoints": ["/chat", "/health"],
+            "direct_access": "https://multipoly.onrender.com/agents/chatbot",
+        },
+        "tutor": {
+            "name": "multipoly-tutor",
+            "port": 8011,
+            "endpoints": [
+                "/advise",
+                "/update_knowledge",
+                "/query_knowledge",
+                "/health",
+            ],
+            "direct_access": "https://multipoly.onrender.com/agents/tutor",
+        },
+    }, 200
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

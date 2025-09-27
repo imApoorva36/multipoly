@@ -36,10 +36,10 @@ export function ChatPanel({
   peerId
 }: ChatPanelProps) {
   const getStatusMessage = () => {
-    if (isFetchingToken) return "🔄 Connecting to chat...";
-    if (isJoiningRoom) return "🚀 Joining room...";
-    if (connectionState === "connected") return "💬 Chat with other players in real-time";
-    return "⚠️ Reconnecting to chat...";
+    if (isFetchingToken) return "Connecting to chat...";
+    if (isJoiningRoom) return "Joining room...";
+    if (connectionState === "connected") return "Chat with other players in real-time";
+    return "Reconnecting to chat...";
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -73,7 +73,7 @@ export function ChatPanel({
                 : "bg-myellow/20 text-myellow border-myellow"
             }`}
           >
-            {connectionState === "connected" ? "🟢 Live" : "⚡ Connecting"}
+            {connectionState === "connected" ? "Live" : "Connecting"}
           </Badge>
         </div>
         
@@ -135,7 +135,7 @@ export function ChatPanel({
                 : "bg-slate-300 text-slate-500 cursor-not-allowed"
             }`}
           >
-            {isSendingMessage ? "📤 Sending..." : "📤 Send"}
+            {isSendingMessage ? "Sending..." : "Send"}
           </Button>
         </div>
       </CardContent>

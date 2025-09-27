@@ -74,22 +74,10 @@ export function AuthenticationScreen({ roomId, onLogin }: AuthenticationScreenPr
             onClick={handleLogin}
             className="bg-gradient-to-r from-mgreen to-mgreen/80 hover:from-mgreen/80 hover:to-mgreen text-white border-2 border-black rounded-none w-full py-6 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
           >
-            🚀 Authenticate & Join Room
+            Authenticate & Join Room
           </Button>
         </div>
         
-        {/* Decorative floating elements */}
-        <div className="absolute top-20 left-12 border-4 border-mblue w-32 h-20 rotate-45 flex items-center justify-center bg-white/70 backdrop-blur-sm animate-bounce">
-          <MessageSquare className="text-mblue w-8 h-8 -rotate-45" />
-        </div>
-        
-        <div className="absolute bottom-20 right-12 border-4 border-mpurple w-32 h-20 -rotate-45 flex items-center justify-center bg-white/70 backdrop-blur-sm animate-bounce" style={{ animationDelay: '1s' }}>
-          <Users className="text-mpurple w-8 h-8 rotate-45" />
-        </div>
-        
-        <div className="absolute top-1/3 right-20 border-4 border-myellow w-20 h-20 rotate-12 flex items-center justify-center bg-white/60 backdrop-blur-sm animate-pulse">
-          <div className="w-3 h-3 bg-myellow rounded-full" />
-        </div>
       </div>
     </div>
   );
