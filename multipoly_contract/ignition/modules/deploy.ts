@@ -2,10 +2,10 @@ require('dotenv').config();
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 import { parseUnits } from "ethers";
 
-const MultipolyDeployment = buildModule("MultipolyDeployment", (m) => {
-    const multipoly = m.contract("Multipoly");
-    
+const MultipolyDeployment = buildModule("MultipolyDeployment", (m) => {    
     const deployer = m.getAccount(0);
+    
+    const multipoly = m.contract("Multipoly", [deployer]);
     
     // Token 1
     const emeraldToken = m.contract("Token", [
@@ -68,3 +68,10 @@ const MultipolyDeployment = buildModule("MultipolyDeployment", (m) => {
 });
 
 export default MultipolyDeployment;
+
+// MultipolyDeployment#Multipoly - 0x57d35D61646BBbA208291505b65f1fdD32371daE
+// MultipolyDeployment#PropertyNFT - 0xD209FbAB8Bd7C7d25Cc6a6245d88f9Ea09DD63FC
+// MultipolyDeployment#Amethyst - 0x06efaA839dD76b9e2737Cb722A3e4A8bCc55D781
+// MultipolyDeployment#Emerald - 0xFD590eD174E0c02ad7BcE6AF6cB7a58e3B1f5828
+// MultipolyDeployment#Golden - 0xBAe2197598390E7362BEdA97Befd485d76970Cba
+// MultipolyDeployment#Ruby - 0xa891917fd97dc08790955da1bc36B2554671b37A
