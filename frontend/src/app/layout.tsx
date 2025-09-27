@@ -3,6 +3,7 @@ import "./globals.css";
 import PrivyProviders from "@/providers/WalletProvider";
 import HuddleProviders from "@/providers/HuddleProvider";
 import QueryProvider from "@/providers/QueryProvider";
+import { ViemProvider } from "@/providers/ViemProvider"
 
 export const metadata: Metadata = {
   title: "Multipoly",
@@ -23,7 +24,9 @@ export default function RootLayout({
         <PrivyProviders>
           <QueryProvider>
             <HuddleProviders>
-              {children}
+              <ViemProvider>
+                {children}
+              </ViemProvider>
             </HuddleProviders>
           </QueryProvider>
         </PrivyProviders>

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDataMessage, usePeerIds, useRoom } from "@huddle01/react/hooks";
+import { useRouter } from "next/navigation"
 
 export type ChatMessage = {
   id: string;
@@ -26,6 +27,7 @@ async function requestAccessToken(roomId: string): Promise<{ roomId: string; tok
 export function useHuddleRoom(roomId?: string | null) {
   const normalizedRoomId = useMemo(() => roomId ?? "", [roomId]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  let router = useRouter()
 
   const { peerIds } = usePeerIds();
   const { joinRoom: huddleJoinRoom, leaveRoom, state } = useRoom({
@@ -39,6 +41,10 @@ export function useHuddleRoom(roomId?: string | null) {
 
   const { sendData } = useDataMessage({
     onMessage(payload, from, label) {
+      if (label == "start") {
+        router.push(`/game/${roomId}`)
+      }
+
       const message: ChatMessage = {
         id: crypto.randomUUID(),
         payload,
@@ -149,5 +155,6 @@ export function useHuddleRoom(roomId?: string | null) {
     isFetchingToken: tokenQuery.isPending,
     tokenError,
     refetchToken: tokenQuery.refetch,
+    sendData
   };
 }

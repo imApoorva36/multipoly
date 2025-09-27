@@ -70,13 +70,13 @@ const ASIHelpSection = () => (
   </div>
 )
 
-export function AppSidebar({ walletClient } : { walletClient: WalletClient | null}) {
+export function AppSidebar() {
   const [activeTab, setActiveTab] = useState("Chat")
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "Play":
-        return <PlaySection walletClient = {walletClient}/>
+        return <PlaySection />
       case "Chat":
         return <ChatSection />
       case "Players":

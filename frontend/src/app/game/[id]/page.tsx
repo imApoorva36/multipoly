@@ -17,9 +17,6 @@ export default function MonopolyBoard() {
     const [rotationZ, setRotationZ] = useState(0);
     const [scale, setScale] = useState(1);
 
-    const [ provider, setProvider ] = useState<EIP1193Provider | null>(null)
-    const [ walletClient, setWalletClient ] = useState<WalletClient | null>(null)
-
     let { wallets } = useWallets()
     let wallet = wallets[0]
 
@@ -46,22 +43,6 @@ export default function MonopolyBoard() {
             };
         }
     }, []);
-
-    useEffect(() => {
-        async function getWalletClient () {
-            let p = await wallet.getEthereumProvider()
-            let wc = createWalletClient({
-                account: wallet.address as Hex,
-                chain: testnet,
-                transport: custom(p)
-            })
-            setProvider(p)
-            setWalletClient(wc)
-        }
-        getWalletClient()
-
-    }, [ wallet ])
-
 
     const renderProperty = (property: MonopolyProperty, index: number) => {
         const { style, orientation, isCorner } = getPropertyPosition(index, property);
@@ -125,7 +106,7 @@ export default function MonopolyBoard() {
         <SidebarProvider>
             <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex flex-row">
                 {/* Sidebar on the left */}
-                <AppSidebar walletClient = {walletClient} />
+                <AppSidebar />
                 {/* Main content */}
                 <main className="flex-1 bg-[url('/delhi-bg.png')] flex flex-col items-center justify-center p-6 relative">
                     <div className="relative" style={{ perspective: "1200px" }}>

@@ -4,6 +4,7 @@ import { UserIcon } from "@heroicons/react/16/solid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PeerCard } from "./PeerCard";
+import { Button } from "../ui/button"
 
 interface Metadata {
   name: string;
@@ -14,9 +15,10 @@ interface PlayersListProps {
   peerIds: string[];
   localPeerMetadata?: Metadata;
   connectionState: string;
+  startGame: () => void
 }
 
-export function PlayersList({ peerIds, localPeerMetadata }: PlayersListProps) {
+export function PlayersList({ peerIds, localPeerMetadata, startGame }: PlayersListProps) {
   const totalPlayers = peerIds.length + 1;
   
   return (
@@ -60,11 +62,20 @@ export function PlayersList({ peerIds, localPeerMetadata }: PlayersListProps) {
           {/* Remote players */}
           {peerIds.length > 0 ? (
             peerIds.map((peerId) => (
-              <PeerCard 
-                key={peerId} 
-                peerId={peerId}
-                isLocal={false}
-              />
+              <>
+                <PeerCard 
+                  key={peerId} 
+                  peerId={peerId}
+                  isLocal={false}
+                />
+                <Button
+                  size="lg"
+                  className="bg-mgreen hover:bg-mgreen/80 text-white border-2 border-black rounded-none w-full py-6 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={startGame}
+                >
+                  Get Started
+                </Button>
+              </>
             ))
           ) : (
             <div className="text-center py-8 text-slate-500">

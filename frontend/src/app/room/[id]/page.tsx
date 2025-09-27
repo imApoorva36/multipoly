@@ -53,6 +53,7 @@ export default function RoomPage() {
     isSendingMessage,
     isFetchingToken,
     tokenError,
+    sendData
   } = useHuddleRoom(roomId);
 
   // Auto-join room and set metadata
@@ -97,6 +98,14 @@ export default function RoomPage() {
     leaveRoom();
     router.push("/");
   };
+
+  function startGame () {
+    sendData({
+      to: "*",
+      payload: "<lets start>",
+      label: "start"
+    })
+  }
 
   // Loading state
   if (!ready || !mounted) {
@@ -152,6 +161,7 @@ export default function RoomPage() {
                 peerIds={peerIds}
                 localPeerMetadata={metadata || undefined}
                 connectionState={state || "disconnected"}
+                startGame={startGame}
               />
             </div>
           </div>
