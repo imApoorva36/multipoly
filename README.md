@@ -1,6 +1,145 @@
-# 🎯 Multipoly - Delhi Edition
+# 🎯 Multipoly
 
-> A blockchain-powered multiplayer board game set in Delhi, featuring AI agents, NFT properties, and real-time strategy gameplay.
+**🏆 ETHGlobal New Delhi 2025 Submission**
+
+> An educational blockchain-powered multiplayer board game set in Delhi, featuring AI agents, NFT properties, and real-time strategy gameplay.
+
+## 🚀 **Live Demo**
+
+**🌐 Main Application**: [https://multipoly.onrender.com](https://multipoly.onrender.com)
+
+## 👥 **Meet the Team**
+
+| Team Member         | GitHub                                           |
+| ------------------- | ------------------------------------------------ |
+| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) |
+| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   |
+| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) |
+| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   |
+
+## 🎮 **Game Overview**
+
+Multipoly transforms the beloved board game experience into a cutting-edge Web3 application. Set against the backdrop of Delhi's iconic landmarks, players navigate through 24 carefully curated locations.
+
+### **🌟 Key Features**
+
+- **🏛️ Delhi-Themed Board**: 24 authentic Delhi locations from Red Fort to Cyber City
+- **🤖 AI-Powered Assistance**: Smart agents for gameplay guidance and chat
+- **⛓️ Blockchain Foundation**: NFT properties with real ownership and trading
+- **📱 Real-Time Multiplayer**: WebRTC-powered seamless gaming experience
+
+## 🔗 **API Endpoints**
+
+### **Health Check**
+
+```bash
+GET https://multipoly.onrender.com/health
+```
+
+### **Chat with AI**
+
+```bash
+POST https://multipoly.onrender.com/api/chat
+Content-Type: application/json
+
+{
+  "message": "Hello, how do I play?"
+}
+```
+
+### **Get Game Advice**
+
+```bash
+POST https://multipoly.onrender.com/api/advise
+Content-Type: application/json
+
+{
+  "state": {"position": 5, "tokens": {"red": 2}},
+  "question": "Should I buy this property?"
+}
+```
+
+## 🎯 **Game Rules**
+
+### **24 Delhi Locations**
+
+#### **🔴 Red Tokens - Heritage Sites**
+
+1. Red Fort 🏰
+2. Qutub Minar 🗼
+3. Humayun's Tomb 🕌
+4. India Gate 🏛️
+5. Lotus Temple 🪷
+6. Akshardham Temple 🛕
+
+#### **🔵 Blue Tokens - Business Hubs**
+
+1. Connaught Place 🏢
+2. Cyber City Gurgaon 💻
+3. Nehru Place 🔌
+4. Karol Bagh 🏪
+5. Lajpat Nagar 🛍️
+6. Khan Market 🥘
+
+#### **� Green Tokens - Education Centers**
+
+1. Delhi University 📚
+2. JNU 🎓
+3. IIT Delhi ⚙️
+4. National Museum 🏛️
+5. Pragati Maidan 🏗️
+6. Raj Ghat 🕯️
+
+#### **🟡 Yellow Tokens - Entertainment**
+
+1. Chandni Chowk 🛒
+2. Sarojini Nagar 👕
+3. Dilli Haat 🎨
+4. Select City Walk 🏬
+5. Hauz Khas Village 🍻
+6. CP Metro Station 🚇
+
+## 🛠️ **Quick Setup**
+
+```bash
+# Clone repository
+git clone https://github.com/imApoorva36/multipoly.git
+
+# Setup Backend
+cd agents
+pip install -r requirements.txt
+python start.py
+
+# Setup Frontend
+cd ../frontend
+npm install
+npm run dev
+```
+
+## 🏆 **ETHGlobal New Delhi 2025**
+
+Built with ❤️ by Team Multipoly for ETHGlobal New Delhi 2025
+
+---
+
+**🎮 Ready to play? Visit [https://multipoly.onrender.com](https://multipoly.onrender.com)**
+
+---
+
+## 🏆 **ETHGlobal New Delhi 2025**
+
+**Team Multipoly** proudly presents our submission for ETHGlobal New Delhi 2025 - a revolutionary take on the classic board game, reimagined with blockchain technology, AI agents, and Delhi's rich cultural heritage.
+
+### **👥 Meet the Team**
+
+| Team Member         | GitHub                                           |
+| ------------------- | ------------------------------------------------ |
+| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) |
+| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   |
+| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) |
+| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   |
+
+---
 
 ## 🚀 **Live Demo**
 
@@ -9,25 +148,76 @@
 ## 📋 **Table of Contents**
 
 - [🎮 Game Overview](#-game-overview)
-- [🔗 API Endpoints](#-api-endpoints)
+- [� System Architecture](#-system-architecture)
+- [�🔗 API Endpoints](#-api-endpoints)
 - [🏛️ Game Rules](#-game-rules)
-- [🏗️ Project Architecture](#-project-architecture)
+- [🏗️ Project Structure](#-project-structure)
 - [🛠️ Development Setup](#-development-setup)
 - [🤖 AI Agents](#-ai-agents)
 - [⛓️ Blockchain Integration](#-blockchain-integration)
 - [📱 Frontend](#-frontend)
+- [🚀 Deployment](#-deployment)
+- [👥 Team & Credits](#-team--credits)
 
 ## 🎮 **Game Overview**
 
-Multipoly is a modern take on the classic board game, set in the vibrant city of Delhi. Players navigate through 24 iconic Delhi locations, collect themed tokens, and build their property empire using blockchain technology and AI-powered assistance.
+Multipoly transforms the beloved board game experience into a cutting-edge Web3 application. Set against the backdrop of Delhi's iconic landmarks, players navigate through 24 carefully curated locations, each representing different aspects of the city's rich heritage and modern development.
 
-### **🌟 Key Features**
+### **🌟 Key Innovations**
 
-- **24 Delhi Locations**: From Red Fort to Cyber City Gurgaon
-- **4 Token Types**: Red (Heritage), Blue (Business), Green (Education), Yellow (Entertainment)
-- **AI Agents**: Smart chatbot and game tutor
-- **Blockchain Integration**: NFT properties and token economics
-- **Real-time Multiplayer**: WebRTC-powered gameplay
+- **🏛️ Delhi-Themed Board**: 24 authentic Delhi locations from Red Fort to Cyber City
+- **🎭 Cultural Integration**: 4 token types representing Delhi's diverse character
+- **🤖 AI-Powered Assistance**: Smart agents for gameplay guidance and chat
+- **⛓️ Blockchain Foundation**: NFT properties with real ownership and trading
+- **🎲 Verifiable Randomness**: Chainlink VRF ensures fair gameplay
+- **📱 Real-Time Multiplayer**: WebRTC-powered seamless gaming experience
+- **🎯 Strategic Depth**: Advanced tokenomics and property synergies
+
+### **� ETHGlobal New Delhi Special Features**
+
+- **Local Heritage Focus**: Celebrating Delhi's monuments and culture
+- **Community Driven**: Built for the Indian Web3 ecosystem
+- **Educational Value**: Players learn about Delhi while having fun
+- **Scalable Architecture**: Ready for mass adoption
+
+---
+
+## 📊 **System Architecture**
+
+<div align="center">
+  
+  ![Architecture Diagram](./arch_diag.jpg)
+  
+  *Multipoly's distributed architecture combining Web3, AI, and real-time gaming*
+
+</div>
+
+### **🏗️ Architecture Components**
+
+#### **Frontend Layer**
+
+- **Next.js 14**: Modern React framework with SSR
+- **WebRTC Integration**: Real-time peer-to-peer communication
+- **Wallet Integration**: MetaMask and WalletConnect support
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+
+#### **Backend Services**
+
+- **Flask API Gateway**: RESTful API orchestration
+- **AI Agents**: Autonomous chatbot and strategy tutor
+- **Real-time Communication**: WebSocket and WebRTC signaling
+
+#### **Blockchain Layer**
+
+- **Smart Contracts**: Property NFTs and game tokens
+- **Chainlink VRF**: Verifiable random number generation
+- **Multi-chain Support**: Ethereum testnet with expansion plans
+
+#### **Data & Intelligence**
+
+- **MeTTa Knowledge Graph**: Game strategy and rules engine
+- **ASI:One Integration**: Advanced AI model integration
+- **Persistent Storage**: Game state and player progress
 
 ---
 
@@ -214,36 +404,88 @@ _Variable opportunities, trendy locations_
 
 ---
 
-## 🏗️ **Project Architecture**
+## 🏗️ **Project Structure**
 
 ```
 multipoly/
-├── agents/                 # AI Agents & Backend
-│   ├── agents_flat/       # Agent implementations
-│   │   ├── agent_chatbot.py
-│   │   ├── agent_tutor.py
-│   │   └── metta_store.py
-│   ├── frontend/          # Flask templates
-│   ├── start.py          # Main application entry
-│   └── requirements.txt
-├── frontend/              # Next.js Frontend
-│   ├── src/app/          # Pages and components
-│   ├── components/       # UI components
-│   └── package.json
-├── multipoly_contract/    # Smart Contracts
-│   ├── contracts/        # Solidity contracts
-│   └── ignition/        # Deployment scripts
-├── vrf/                  # VRF for randomness
-└── flow_schedular/       # Cadence contracts
+├── 📊 arch_diag.jpg          # System architecture diagram
+├── 📋 README.md              # This comprehensive guide
+├── 📜 LICENSE                # MIT License
+├── 🎯 game_rules.md          # Detailed game rules
+├── 🤖 agents/                # AI Agents & Backend Services
+│   ├── agents_flat/          # Agent implementations
+│   │   ├── agent_chatbot.py  # General chat assistant
+│   │   ├── agent_tutor.py    # Strategic game advisor
+│   │   ├── metta_store.py    # Knowledge graph engine
+│   │   └── asi_client.py     # ASI:One integration
+│   ├── frontend/             # Flask templates & static files
+│   ├── start.py             # Main Flask application
+│   ├── requirements.txt     # Python dependencies
+│   └── private_keys.json    # Agent wallet keys
+├── 🎮 frontend/              # Next.js Frontend Application
+│   ├── src/                 # Source code
+│   │   ├── app/            # Next.js app router
+│   │   ├── components/     # React components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── lib/            # Utility libraries
+│   │   ├── providers/      # Context providers
+│   │   └── utils/          # Helper functions
+│   ├── public/             # Static assets & logos
+│   ├── components.json     # shadcn/ui configuration
+│   └── package.json        # Node.js dependencies
+├── ⛓️ multipoly_contract/    # Smart Contracts (Ethereum)
+│   ├── contracts/          # Solidity contracts
+│   │   ├── Multipoly.sol   # Main game contract
+│   │   ├── PropertyNFT.sol # Property ownership NFTs
+│   │   └── Token.sol       # Game token implementation
+│   ├── ignition/           # Hardhat deployment
+│   ├── hardhat.config.ts   # Hardhat configuration
+│   └── Prototypes.md       # Contract documentation
+├── 🎲 vrf/                   # Verifiable Random Functions
+│   ├── contracts/          # VRF smart contracts
+│   │   └── DiceRoll.sol    # Random dice roll contract
+│   ├── ignition/           # VRF deployment scripts
+│   └── test/              # Contract tests
+└── 🌊 flow_schedular/        # Flow Blockchain Integration
+    ├── cadence/            # Cadence smart contracts
+    │   ├── contracts/      # Flow contracts
+    │   ├── scripts/        # Flow scripts
+    │   ├── transactions/   # Flow transactions
+    │   └── tests/          # Flow tests
+    └── flow.json          # Flow configuration
 ```
 
-### **🔗 Service Communication**
+### **🔗 Service Communication Flow**
 
+```mermaid
+graph TD
+    A[Next.js Frontend] --> B[Flask API Gateway]
+    B --> C[Chatbot Agent]
+    B --> D[Tutor Agent]
+    C --> E[ASI:One AI Model]
+    D --> F[MeTTa Knowledge Graph]
+
+    A --> G[Ethereum Smart Contracts]
+    G --> H[Property NFTs]
+    G --> I[Game Tokens]
+    G --> J[Chainlink VRF]
+
+    A --> K[WebRTC Signaling]
+    K --> L[Real-time Multiplayer]
+
+    B --> M[CORS Enabled API]
+    M --> N[External Integrations]
 ```
-Frontend (Next.js) ←→ Flask API ←→ AI Agents
-       ↓                    ↓
- Blockchain (Ethereum)  Knowledge Graph
-```
+
+### **🎯 Technology Stack by Team Member**
+
+| Component           | Technologies                                | Team Lead          |
+| ------------------- | ------------------------------------------- | ------------------ |
+| **Frontend**        | Next.js 14, Tailwind CSS, shadcn/ui, WebRTC | Vedant Tarale      |
+| **AI Agents**       | Python, uAgents, ASI:One, MeTTa, Flask      | Apoorva Agrawal    |
+| **Smart Contracts** | Solidity, Hardhat, OpenZeppelin, ERC-721/20 | Fahim Ahmed        |
+| **Blockchain VRF**  | Chainlink VRF, Verifiable Randomness        | J Hariharan        |
+| **Integration**     | CORS, REST APIs, WebSocket, Git             | Team Collaboration |
 
 ---
 
@@ -411,16 +653,60 @@ curl -X POST https://multipoly.onrender.com/api/advise \
 
 ---
 
-## 📄 **License**
+## � **Deployment**
+
+### **🌐 Live Deployment**
+
+- **Production URL**: [https://multipoly.onrender.com](https://multipoly.onrender.com)
+- **Platform**: Render.com (Free Tier)
+- **CI/CD**: Automatic deployment from GitHub main branch
+
+### **🔧 Deployment Configuration**
+
+**Render Build Settings**:
+
+```bash
+# Build Command
+cd agents && pip install -r requirements.txt
+
+# Start Command
+cd agents && python start.py
+
+# Environment Variables
+PORT=10000
+ASI_ONE_API_KEY=[Your API Key]
+```
+
+### **📊 Service Health Monitoring**
+
+- **Health Check**: `https://multipoly.onrender.com/health`
+- **Agent Status**: `https://multipoly.onrender.com/agents/info`
+- **Uptime Monitoring**: Automated health checks every 5 minutes
+
+---
+
+## �📄 **License**
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🏆 **Authors**
+<div align="center">
 
-- ......... [@imApoorva36](https://github.com/imApoorva36)
+## 🎮 **Ready to Play?**
+
+[![Play Now](https://img.shields.io/badge/🎯_PLAY_NOW-multipoly.onrender.com-success?style=for-the-badge&logo=gamepad)](https://multipoly.onrender.com)
+
+**Experience the future of board games - where blockchain meets Delhi's heritage!**
+
+### **🌟 Built with ❤️ at ETHGlobal New Delhi 2025**
+
+_From Team Multipoly to the Web3 Gaming Community_
 
 ---
 
-**🎮 Ready to play? Visit [https://multipoly.onrender.com](https://multipoly.onrender.com) and start your Delhi property empire!**
+**📧 Contact**: For inquiries, reach out to any team member via GitHub
+
+**🔗 Repository**: [github.com/imApoorva36/multipoly](https://github.com/imApoorva36/multipoly)
+
+</div>
