@@ -1,10 +1,10 @@
 "use client";
 
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FullScreenLoader } from "@/components/ui/fullscreen-loader";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import UserObject from "@/components/ui/user-object";
@@ -13,6 +13,7 @@ import { createRoom } from "@/utils/createRoom";
 import { RoomControlsCard } from "@/components/lobby/RoomControlsCard";
 import { ShareRoomCard } from "@/components/lobby/ShareRoomCard";
 import { NextStepsCard } from "@/components/lobby/NextStepsCard";
+import { useLocalPeer } from "@huddle01/react"
 
 
 function Home() {
@@ -22,6 +23,15 @@ function Home() {
   const [createdRoomId, setCreatedRoomId] = useState<string | null>(null);
   const [hasCopied, setHasCopied] = useState(false);
 
+  let {wallets} = useWallets()
+  let wallet = wallets[0]
+
+  useEffect(() => {
+    if (!wallet) return
+
+    wallet.switchChain(545)
+  }, [wallet])
+  
   const {
     mutateAsync: createRoomMutation,
     isPending: isCreatingRoom,

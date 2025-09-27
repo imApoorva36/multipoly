@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import {
   ArrowLeftIcon,
   ChatBubbleLeftIcon,
@@ -15,7 +15,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import UserObject from "@/components/ui/user-object";
-import { useHuddleRoom } from "@/hooks/useHuddleRoom";
+import { ChatMessage, useHuddleRoom } from "@/hooks/useHuddleRoom";
+import { useLocalPeer, useRemotePeer } from "@huddle01/react"
+
+interface Metadata {
+  name: string
+  image: string
+}
 
 function getRoomIdParam(param: string | string[] | undefined): string | null {
   if (!param) {
@@ -35,6 +41,10 @@ export default function RoomPage() {
   const router = useRouter();
   const [newMessage, setNewMessage] = useState("");
 
+  let {wallets} = useWallets()
+  let wallet = wallets[0]
+  let { updateMetadata, metadata, peerId } = useLocalPeer<Metadata>()
+  console.log(metadata)
   const roomId = useMemo(() => getRoomIdParam(params?.id), [params?.id]);
 
   const {
@@ -51,16 +61,22 @@ export default function RoomPage() {
     tokenError,
   } = useHuddleRoom(roomId);
 
+
   useEffect(() => {
     if (!roomId) {
       return;
     }
 
-    if (state === "connected" || isJoiningRoom) {
-      return;
+    if (state === "connected") {
+      if (metadata?.name) return
+      updateMetadata({
+        name: wallet.address.slice(0, 6) + "..." + wallet.address.slice(-4),
+        image: "https://api.dicebear.com/9.x/identicon/svg?seed=" + wallet.address
+      })
+      return
     }
 
-    if (isFetchingToken) {
+    if (isFetchingToken || isJoiningRoom) {
       return;
     }
 
@@ -83,6 +99,24 @@ export default function RoomPage() {
       alert((error as Error).message);
     }
   };
+
+  function resolveMetadata (peerId: string) {
+    let m: Metadata = {name: "", image: "https://api.dicebear.com/9.x/identicon/svg?seed=0"}
+    if (peerId) {
+      let remotePeer = useRemotePeer<Metadata>({peerId})
+      m = remotePeer.metadata || m
+    }
+    else {
+      let localPeer = useLocalPeer<Metadata>()
+      m = localPeer.metadata || m
+    }
+
+    if (!m.name) {
+      m = {...m, name: "User"}
+    }
+
+    return m
+  }
 
   const handleLeaveRoom = () => {
     leaveRoom();
@@ -130,22 +164,52 @@ export default function RoomPage() {
     );
   }
 
-  const RemotePeerCard = ({ peerId }: { peerId: string }) => (
-    <Card className="transition-all hover:shadow-md">
-      <CardContent className="flex items-center space-x-3 p-4">
-        <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
-          <UserIcon className="w-5 h-5 text-green-600" />
+  function RemotePeerCard ({ peerId }: { peerId: string }) {
+    let metadata = resolveMetadata(peerId)
+
+     return (
+        <Card className="transition-all hover:shadow-md">
+          <CardContent className="flex items-center space-x-3 p-4">
+            <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
+              <img className="w-10 h-10 p-2" src={metadata.image} alt="" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">{metadata.name}</p>
+              <p className="text-xs text-muted-foreground font-mono">Participant</p>
+            </div>
+            <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
+              {peerId ? "Online" : "You"}
+            </Badge>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    function MessageBubble ({ message }: { message: ChatMessage }) {
+      let metadata = resolveMetadata(message.from == peerId ? "" : message.from)
+      return (
+        <div key={message.id} className="space-y-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                {message.from == peerId ? "You" : metadata.name}
+              </Badge>
+              {message.label && (
+                <Badge variant="secondary" className="text-xs">
+                  {message.label}
+                </Badge>
+              )}
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {message.timestamp.toLocaleTimeString()}
+            </span>
+          </div>
+          <p className="text-sm bg-background p-2 rounded border">
+            {message.payload}
+          </p>
         </div>
-        <div className="flex-1">
-          <p className="text-sm font-medium text-foreground">Connected User</p>
-          <p className="text-xs text-muted-foreground font-mono">{peerId}</p>
-        </div>
-        <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-          Online
-        </Badge>
-      </CardContent>
-    </Card>
-  );
+      )
+    }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -200,26 +264,7 @@ export default function RoomPage() {
                 {messages.length > 0 ? (
                   <div className="space-y-3">
                     {messages.map((message) => (
-                      <div key={message.id} className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
-                              {message.from}
-                            </Badge>
-                            {message.label && (
-                              <Badge variant="secondary" className="text-xs">
-                                {message.label}
-                              </Badge>
-                            )}
-                          </div>
-                          <span className="text-xs text-muted-foreground">
-                            {message.timestamp.toLocaleTimeString()}
-                          </span>
-                        </div>
-                        <p className="text-sm bg-background p-2 rounded border">
-                          {message.payload}
-                        </p>
-                      </div>
+                      <MessageBubble key={message.id} message={message} />
                     ))}
                   </div>
                 ) : (
@@ -263,24 +308,19 @@ export default function RoomPage() {
                   <UserIcon className="h-5 w-5 text-primary" />
                   <CardTitle>Participants</CardTitle>
                 </div>
-                <Badge variant="secondary">{peerIds.length} connected</Badge>
+                <Badge variant="secondary">{peerIds.length + 1} connected</Badge>
               </div>
               <CardDescription>Users currently in the room</CardDescription>
             </CardHeader>
             <CardContent>
-              {peerIds.length > 0 ? (
                 <div className="space-y-3">
-                  {peerIds.map((peerId) => (
-                    <RemotePeerCard key={peerId} peerId={peerId} />
-                  ))}
+                  <RemotePeerCard peerId=""/>
+                  {peerIds.length > 0 ? (
+                    peerIds.map((peerId) => (
+                      <RemotePeerCard key={peerId} peerId={peerId} />
+                    ))
+                  ): null}
                 </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <UserIcon className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No participants yet</p>
-                  <p className="text-xs">Invite others to join this room</p>
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>

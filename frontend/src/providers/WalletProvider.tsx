@@ -3,6 +3,26 @@
 import { PrivyProvider } from "@privy-io/react-auth";
 
 export default function PrivyProviders({ children }: { children: React.ReactNode }) {
+  let testnet = {
+    id: 545,
+    name: 'Flow',
+    rpcUrls: {
+      default: {http:['https://testnet.evm.nodes.onflow.org']}
+    },
+    nativeCurrency: {
+      name: 'Flow',
+      symbol: 'FLOW',
+      decimals: 18,
+    },
+    blockExplorers: {
+      default: {
+        url: 'https://evm-testnet.flowscan.io/',
+        name: "Flow EVM Testnet Explorer"
+      }
+    }
+  }
+
+
   return (
     <PrivyProvider
       appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
@@ -14,6 +34,8 @@ export default function PrivyProviders({ children }: { children: React.ReactNode
           }
         },
         appearance: { walletChainType: "ethereum-only" },
+        defaultChain: testnet,
+        supportedChains: [testnet],
       }}
     >
       {children}

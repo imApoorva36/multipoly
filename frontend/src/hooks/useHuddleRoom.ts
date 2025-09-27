@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useDataMessage, usePeerIds, useRoom } from "@huddle01/react/hooks";
 
-type ChatMessage = {
+export type ChatMessage = {
   id: string;
   payload: string;
   from: string;
