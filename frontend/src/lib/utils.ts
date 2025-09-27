@@ -7,3 +7,5 @@ export function cn(...inputs: ClassValue[]) {
 
 export let tokens = ['AMETHYST', 'EMRALD', 'GOLDEN', 'RUBY']
 export let tokenSymbols = ["AMTY", "EMRD", "GLDN", "RUBY"]
+
+export let getPfp = (name: string = "") => "https://api.dicebear.com/9.x/identicon/svg?seed=" + name

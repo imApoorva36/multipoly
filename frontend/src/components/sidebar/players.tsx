@@ -8,8 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui
 import { UserIcon } from "@heroicons/react/16/solid"
 import { useWallets } from "@privy-io/react-auth"
 import Image from "next/image"
+import { getPfp } from "@/lib/utils"
+import { resolveMetadata } from "next/dist/lib/metadata/resolve-metadata"
 
-export default function PlayersSection () {
+export default function PlayersSection ({ participants }: { participants: string[] }) {
     const params = useParams<{ id: string }>();
     const roomId = params.id
     const {
@@ -31,44 +33,42 @@ export default function PlayersSection () {
     const {wallets} = useWallets()
     const wallet = wallets[0]
 
-        function useResolveMetadata (peerId: string) {
-        let m: Metadata = {name: "", image: "https://api.dicebear.com/9.x/identicon/svg?seed=0"}
+    function useResolveMetadata (peerId?: string) {
+        let name = ""
         if (peerId) {
-        const remotePeer = useRemotePeer<Metadata>({peerId})
-        m = remotePeer.metadata || m
+            const remotePeer = useRemotePeer<Metadata>({peerId})
+            name = remotePeer?.metadata?.name || ""
         }
         else {
-        const localPeer = useLocalPeer<Metadata>()
-        m = localPeer.metadata || m
+            const localPeer = useLocalPeer<Metadata>()
+            name = localPeer?.metadata?.name || ""
         }
 
-        if (!m.name) {
-        m = {...m, name: "User"}
-        }
-
-        return m
+        return name
     }
 
-    function PeerCard ({ peerId, isLocal = false }: { peerId?: string, isLocal?: boolean }) {
-        const metadata = useResolveMetadata(peerId || '')
+    function PeerCard ({ id, isLocal = false }: { id?: string, isLocal?: boolean }) {
         // Default image in case metadata.image is empty
-        const imageSrc = metadata.image || "/world-map.png"
+        let name = useResolveMetadata(isLocal ? "" : id)
+        const imageSrc = getPfp(name)
 
+        if (name == "") return <></>
+        
         return (
             <Card className="border-2 border-black rounded-none bg-white/90 backdrop-blur-sm hover:shadow-md transition-all">
                 <CardContent className="flex items-center space-x-4 p-4">
                     <div className="w-12 h-12 border-2 rounded-none overflow-hidden">
-                        <Image 
-                            className="w-full h-full object-cover" 
+                        <img 
+                            className="w-12 h-12 object-cover" 
                             src={imageSrc} 
-                            alt={metadata.name || "Player"} 
+                            alt={name || "Player"} 
                             width={48}
                             height={48}
                         />
                     </div>
                     <div className="flex-1">
                         <p className="font-bold text-slate-800">
-                            {metadata.name}
+                            {name}
                             {isLocal && <span className="text-mblue ml-1">(You)</span>}
                         </p>
                         <p className="text-xs text-slate-500">
@@ -79,7 +79,7 @@ export default function PlayersSection () {
                         variant={isLocal ? "default" : "secondary"}
                         className={`rounded-none border-2 ${isLocal ? 'bg-mblue/20 text-mblue border-mblue' : 'bg-mgreen/20 text-mgreen border-mgreen'}`}
                     >
-                        {isLocal ? '👤 You' : '🎮 Online'}
+                        {isLocal ? 'You' : 'Online'}
                     </Badge>
                 </CardContent>
             </Card>
@@ -115,19 +115,13 @@ export default function PlayersSection () {
             
             <CardContent>
                 <div className="space-y-3">
-                    {/* Local player always first */}
-                    <div className="relative">
-                        <div className="absolute -left-2 top-0 bottom-0 w-1 bg-mblue rounded-full" />
-                        <PeerCard isLocal={true} />
-                    </div>
-                    
                     {/* Remote players */}
-                    {peerIds.length > 0 ? (
-                        peerIds.map((id) => (
+                    {participants.length > 0 ? (
+                        participants.map((id, i) => (
                             <PeerCard 
                                 key={id} 
-                                peerId={id}
-                                isLocal={false}
+                                id={id}
+                                isLocal={i==0}
                             />
                         ))
                     ) : (

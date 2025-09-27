@@ -9,6 +9,9 @@ import { BadgeQuestionMark, Globe2 } from "lucide-react";
 import { EIP1193Provider, useWallets } from "@privy-io/react-auth"
 import { createWalletClient, custom, Hex, WalletClient } from "viem"
 import { testnet } from "@/providers/WalletProvider"
+import { useHuddleRoom } from "@/hooks/useHuddleRoom"
+import { useParams } from "next/navigation"
+import { useLocalPeer, useRemotePeer } from "@huddle01/react"
 
 export default function MonopolyBoard() {
     const [mounted, setMounted] = useState(false);
@@ -17,11 +20,30 @@ export default function MonopolyBoard() {
     const [rotationZ, setRotationZ] = useState(0);
     const [scale, setScale] = useState(1);
 
-    const [ provider, setProvider ] = useState<EIP1193Provider | null>(null)
-    const [ walletClient, setWalletClient ] = useState<WalletClient | null>(null)
-
     const { wallets } = useWallets()
     const wallet = wallets[0]
+
+    const params = useParams()
+    const roomId = typeof params?.id === "string" ? params.id : null
+
+    const {
+        state,
+        messages,
+        peerIds,
+        leaveRoom,
+        joinRoom,
+        isJoiningRoom,
+        joinError,
+        sendMessage,
+        isSendingMessage,
+        isFetchingToken,
+        tokenError,
+        sendData
+    } = useHuddleRoom(roomId);
+
+    let { peerId: myId } = useLocalPeer()
+
+    const [ participants, setParticipants ] = useState<string[]>([myId as string])
 
     useEffect(() => {
         setMounted(true);
@@ -47,27 +69,19 @@ export default function MonopolyBoard() {
         }
     }, []);
 
+
     useEffect(() => {
-        async function getWalletClient () {
-            // Check if wallet exists before trying to access its properties
-            if (wallet) {
-                try {
-                    const p = await wallet.getEthereumProvider()
-                    const wc = createWalletClient({
-                        account: wallet.address as Hex,
-                        chain: testnet,
-                        transport: custom(p)
-                    })
-                    setProvider(p)
-                    setWalletClient(wc)
-                } catch (error) {
-                    console.error("Error getting Ethereum provider:", error)
-                }
+        if (state !== 'connected') return
+
+        let newParticipants = [...participants]
+        for (let id of peerIds) {
+            if (!newParticipants.includes(id)) {
+                newParticipants.push(id)
             }
         }
-        getWalletClient()
+        setParticipants(newParticipants)
 
-    }, [ wallet ])
+    }, [state, peerIds])
 
 
     const renderProperty = (property: MonopolyProperty, index: number) => {
@@ -132,7 +146,7 @@ export default function MonopolyBoard() {
         <SidebarProvider>
             <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex flex-row">
                 {/* Sidebar on the left */}
-                <AppSidebar />
+                <AppSidebar participants={participants} />
                 {/* Main content */}
                 <main className="flex-1 bg-[url('/delhi-bg.png')] flex flex-col items-center justify-center p-6 relative">
                     <div className="relative" style={{ perspective: "1200px" }}>

@@ -70,7 +70,7 @@ const ASIHelpSection = () => (
   </div>
 )
 
-export function AppSidebar() {
+export function AppSidebar({ participants } : { participants: string[] }) {
   const [activeTab, setActiveTab] = useState("Chat")
 
   const renderTabContent = () => {
@@ -80,7 +80,7 @@ export function AppSidebar() {
       case "Chat":
         return <ChatSection />
       case "Players":
-        return <PlayersSection />
+        return <PlayersSection participants={participants} />
       case "ASI Help":
         return <ASIHelpSection />
       default:
