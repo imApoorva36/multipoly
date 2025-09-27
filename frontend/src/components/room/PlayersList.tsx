@@ -102,22 +102,22 @@ export function PlayersList({ peerIds, localPeerMetadata, startGame }: PlayersLi
           
           {/* Remote players */}
           {peerIds.length > 0 ? (
-            peerIds.map((peerId) => (
-              <>
+            <>
+              {peerIds.map((peerId) => (
                 <PeerCard 
                   key={peerId} 
                   peerId={peerId}
                   isLocal={false}
                 />
-                <Button
-                  size="lg"
-                  className="bg-mgreen hover:bg-mgreen/80 text-white border-2 border-black rounded-none w-full py-6 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300"
-                  onClick={startGame}
-                >
-                  Get Started
-                </Button>
-              </>
-            ))
+              ))}
+              <Button
+                size="lg"
+                className="bg-mgreen hover:bg-mgreen/80 text-white border-2 border-black rounded-none w-full py-6 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+                onClick={startGame}
+              >
+                Get Started
+              </Button>
+            </>
           ) : (
             <div className="text-center py-8 text-slate-500">
               <div className="w-16 h-16 border-2 border-slate-300 bg-slate-100 rounded-none flex items-center justify-center mx-auto mb-4">

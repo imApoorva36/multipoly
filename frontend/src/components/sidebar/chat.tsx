@@ -119,7 +119,7 @@ export default function ChatSection ({ sendMessage, messages, state, isSendingMe
             
             <div className="flex-1 flex flex-col space-y-4 p-4 pt-0 h-full overflow-hidden">
               {/* Messages Container */}
-              <div className="flex-1 overflow-hidden border-2 border-black rounded-none bg-gradient-to-br from-slate-50 to-slate-100">
+              <div className="flex-1 overflow-hidden border-1 border-black rounded-none bg-gradient-to-br from-slate-50 to-slate-100">
                 <div className="h-full overflow-y-auto p-4 scroll-smooth" id="messages-container">
                   {messages.length > 0 ? (
                     <div className="space-y-4">
