@@ -26,13 +26,13 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     id: "new-delhi",
     name: "ETHGlobal New Delhi",
-    description: "New Delhi-themed Monopoly with local landmarks and culture",
+    description: "New Delhi-themed Multipoly with local landmarks and culture",
     disabled: false,
   },
   {
     id: "world",
     name: "ETH Online 2025",
-    description: "Global-themed Monopoly with international landmarks and culture",
+    description: "Global-themed Multipoly with international landmarks and culture",
     disabled: true,
   },
 ];
