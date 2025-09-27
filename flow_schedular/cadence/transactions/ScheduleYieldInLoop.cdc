@@ -11,7 +11,7 @@ transaction(
     executionEffort: UInt64
 ) {
     prepare(signer: auth(BorrowValue, IssueStorageCapabilityController, SaveValue, GetStorageCapabilityController, PublishCapability) &Account) {
-        let future = getCurrentBlock().timestamp + delaySeconds + 300.0  // Adding buffer to ensure scheduling in future
+        let future = getCurrentBlock().timestamp + delaySeconds  // Adding buffer to ensure scheduling in future
 
         let pr = priority == 0
             ? FlowTransactionScheduler.Priority.High

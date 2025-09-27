@@ -68,7 +68,7 @@ access(all) contract YieldTokenLoopTransactionHandler {
             // Extract loop configuration from transaction data
             let loopConfig = data as! LoopConfig? ?? panic("LoopConfig data is required")
 
-            let future = getCurrentBlock().timestamp + loopConfig.delay + 30.0  // Adding buffer to ensure scheduling in future
+            let future = getCurrentBlock().timestamp + loopConfig.delay
 
             let estimate = FlowTransactionScheduler.estimate(
                 data: data,

@@ -72,13 +72,6 @@
 		"testnet": "access.devnet.nodes.onflow.org:9000"
 	},
 	"accounts": {
-		"asdfghjkl": {
-			"address": "966c8e6481744171",
-			"key": {
-				"type": "file",
-				"location": "asdfghjkl.pkey"
-			}
-		},
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
 			"key": {
@@ -86,15 +79,18 @@
 				"location": "emulator-account.pkey"
 			}
 		},
-		"qwertyuiop": {
-			"address": "179b6b1cb6755e31",
-			"key": "b67b76cf1dbb3fccb958ceb538d8b3ebe361a93b226647baf528f8817b06eb58"
-		},
-		"zxcvbnm": {
-			"address": "645f528a098a4bcf",
+		"test-account-1": {
+			"address": "8cffef0ddd5f17ee",
 			"key": {
 				"type": "file",
-				"location": "zxcvbnm.pkey"
+				"location": "test-account-1.pkey"
+			}
+		},
+		"test-account-2": {
+			"address": "689856d0cca51731",
+			"key": {
+				"type": "file",
+				"location": "test-account-2.pkey"
 			}
 		}
 	},
@@ -106,7 +102,7 @@
 			]
 		},
 		"testnet": {
-			"asdfghjkl": [
+			"test-account-1": [
 				"YieldToken",
 				"YieldTokenLoopTransactionHandler"
 			]
