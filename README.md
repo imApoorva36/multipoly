@@ -12,20 +12,20 @@ Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining
 
 ## 🎯 Sponsor Tracks (ETHGlobal New Delhi 2025)
 
-* **Flow Blockchain** → Cadence smart contracts for game mechanics
-* **ASI Alliance** → AI agents for strategy assistance
-* **ENS** → Decentralized identity integration
+- **Flow Blockchain** → Cadence smart contracts for game mechanics
+- **ASI Alliance** → AI agents for strategy assistance
+- **ENS** → Decentralized identity integration
 
 ---
 
 ## ⚡ Key Features
 
-* **24 Delhi Locations**: Heritage sites, business hubs, education centers, entertainment districts
-* **4 Token Categories**: 🔴 Heritage | 🔵 Business | 🟢 Education | 🟡 Entertainment
-* **AI Agents**: Gameplay assistant & strategic tutor
-* **NFT Properties**: ERC-721 landmarks
-* **Real-Time Multiplayer**: WebRTC-powered sync and chat
-* **Verifiable Randomness**: Chainlink VRF for dice rolls
+- **24 Delhi Locations**: Heritage sites, business hubs, education centers, entertainment districts
+- **4 Token Categories**: 🔴 Heritage | 🔵 Business | 🟢 Education | 🟡 Entertainment
+- **AI Agents**: Gameplay assistant & strategic tutor
+- **NFT Properties**: ERC-721 landmarks
+- **Real-Time Multiplayer**: WebRTC-powered sync and chat
+- **Verifiable Randomness**: Chainlink VRF for dice rolls
 
 ---
 
@@ -35,9 +35,9 @@ Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining
 
 ![Architecture Diagram](./arch_diag.jpg)
 
-*Multipoly combines Web3, AI, and real-time communication in a distributed architecture.*
+_Multipoly combines Web3, AI, and real-time communication in a distributed architecture._
 
-</div>  
+</div>
 
 ---
 
@@ -45,21 +45,21 @@ Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining
 
 ### AI & Agents (ASI Alliance)
 
-* **Chatbot Agent**: General help with ASI:One models
-* **Tutor Agent**: Move analysis & strategic advice
-* **Knowledge Graph**: MeTTa-powered game state
+- **Chatbot Agent**: General help with ASI:One models
+- **Tutor Agent**: Move analysis & strategic advice
+- **Knowledge Graph**: MeTTa-powered game state
 
 ### Blockchain
 
-* **Flow**: Game state persistence, yield tokens, decentralized room management
-* **Ethereum**: ERC-721 NFTs, Hardhat contracts
-* **Chainlink VRF**: Fair dice rolls
+- **Flow**: Game state persistence, yield tokens, decentralized room management
+- **Ethereum**: ERC-721 NFTs, Hardhat contracts
+- **Chainlink VRF**: Fair dice rolls
 
 ### Core
 
-* **Frontend**: Next.js 14, Tailwind CSS, shadcn/ui
-* **Backend**: Python Flask API, CORS-enabled
-* **Real-time**: WebRTC (video + gameplay sync)
+- **Frontend**: Next.js 14, Tailwind CSS, shadcn/ui
+- **Backend**: Python Flask API, CORS-enabled
+- **Real-time**: WebRTC (video + gameplay sync)
 
 ---
 
@@ -67,9 +67,9 @@ Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining
 
 ### Prerequisites
 
-* Node.js 18+
-* Python 3.9–3.12
-* Git
+- Node.js 18+
+- Python 3.9–3.12
+- Git
 
 ### Quick Start
 
@@ -151,23 +151,23 @@ POST https://multipoly.onrender.com/api/advise
 
 ### Victory Conditions
 
-* **Token Master**: Collect 15+ tokens
-* **Property Mogul**: Own 8+ properties across groups
-* **Delhi Emperor**: ₹10,000+ net worth
+- **Token Master**: Collect 15+ tokens
+- **Property Mogul**: Own 8+ properties across groups
+- **Delhi Emperor**: ₹10,000+ net worth
 
 ### Locations & Tokens
 
-* 🔴 **Heritage**: Red Fort, Qutub Minar, Humayun's Tomb, India Gate, Lotus Temple, Akshardham
-* 🔵 **Business**: Connaught Place, Cyber City Gurgaon, Nehru Place, Karol Bagh, Lajpat Nagar, Khan Market
-* 🟢 **Education**: Delhi University, JNU, IIT Delhi, National Museum, Pragati Maidan, Raj Ghat
-* 🟡 **Entertainment**: Chandni Chowk, Sarojini Nagar, Dilli Haat, Select City Walk, Hauz Khas, CP Metro Station
+- 🔴 **Heritage**: Red Fort, Qutub Minar, Humayun's Tomb, India Gate, Lotus Temple, Akshardham
+- 🔵 **Business**: Connaught Place, Cyber City Gurgaon, Nehru Place, Karol Bagh, Lajpat Nagar, Khan Market
+- 🟢 **Education**: Delhi University, JNU, IIT Delhi, National Museum, Pragati Maidan, Raj Ghat
+- 🟡 **Entertainment**: Chandni Chowk, Sarojini Nagar, Dilli Haat, Select City Walk, Hauz Khas, CP Metro Station
 
 ### Core Mechanics
 
-* **Starting Cash**: ₹2,000
-* **Property Prices**: ₹100–₹800
-* **Turn**: Roll dice → Move → Buy/Pay → Collect tokens
-* **Special Cards**: Delhi Metro (travel), Traffic Jam, Monsoon, Festival Bonus
+- **Starting Cash**: ₹2,000
+- **Property Prices**: ₹100–₹800
+- **Turn**: Roll dice → Move → Buy/Pay → Collect tokens
+- **Special Cards**: Delhi Metro (travel), Traffic Jam, Monsoon, Festival Bonus
 
 ---
 
@@ -201,16 +201,16 @@ multipoly/
 
 We welcome community contributions!
 
-* Fork the repo
-* Create a branch (`git checkout -b feature-name`)
-* Commit (`git commit -m "Add feature"`)
-* Push & open a PR
+- Fork the repo
+- Create a branch (`git checkout -b feature-name`)
+- Commit (`git commit -m "Add feature"`)
+- Push & open a PR
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **Apache 2.0 License**.
 
 ---
 
@@ -218,7 +218,7 @@ This project is licensed under the **MIT License**.
 
 ### 🎮 Experience the future of board games with Web3 & AI
 
-[![Play Now](https://img.shields.io/badge/🎯_PLAY_NOW-multipoly.onrender.com-success?style=for-the-badge\&logo=gamepad)](https://multipoly.onrender.com)
+[![Play Now](https://img.shields.io/badge/🎯_PLAY_NOW-multipoly.onrender.com-success?style=for-the-badge&logo=gamepad)](https://multipoly.onrender.com)
 
 **Built with ❤️ at ETHGlobal New Delhi 2025**
 
