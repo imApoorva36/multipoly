@@ -191,9 +191,8 @@ tutor_agent.include(protocol, publish_manifest=True)
 @tutor_agent.on_event("startup")
 async def startup_handler(ctx: Context):
     ctx.logger.info(
-        "Tutor ready at %s (REST on http://127.0.0.1:%s)",
+        "Tutor ready at %s (REST on http://127.0.0.1:8011)",
         tutor_agent.address,
-        tutor_agent.port,
     )
     ctx.logger.info("MeTTa knowledge graph initialized for Multipoly")
 

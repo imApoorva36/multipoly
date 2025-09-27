@@ -123,9 +123,8 @@ agent.include(protocol, publish_manifest=True)
 @agent.on_event("startup")
 async def startup_handler(ctx: Context):
     ctx.logger.info(
-        "Chatbot ready at %s (REST on http://127.0.0.1:%s)",
+        "Chatbot ready at %s (REST on http://127.0.0.1:8010)",
         agent.address,
-        agent.port,
     )
     ctx.logger.info("Registered chat protocol for ASI:One compatibility")
 
