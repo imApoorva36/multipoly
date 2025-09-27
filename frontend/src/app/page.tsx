@@ -2,169 +2,79 @@
 
 import { usePrivy } from "@privy-io/react-auth";
 import Image from "next/image";
-import { useState } from "react";
-import { useRoom, usePeerIds, useDataMessage } from "@huddle01/react/hooks";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
 import { FullScreenLoader } from "@/components/ui/fullscreen-loader";
-import { ArrowLeftIcon, UserIcon, ChatBubbleLeftIcon, SignalIcon } from "@heroicons/react/16/solid";
+import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import UserObject from "@/components/ui/user-object";
-import { createRoom } from "@/utils/createRoom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { createRoom } from "@/utils/createRoom";
+import { RoomControlsCard } from "@/components/lobby/RoomControlsCard";
+import { ShareRoomCard } from "@/components/lobby/ShareRoomCard";
+import { NextStepsCard } from "@/components/lobby/NextStepsCard";
 
 
 function Home() {
   const { ready, authenticated, logout, login } = usePrivy();
-  const [roomId, setRoomId] = useState<string>("");
-  const [accessToken, setAccessToken] = useState<string>("");
-  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
-  const [isGettingToken, setIsGettingToken] = useState(false);
+  const router = useRouter();
   const [manualRoomId, setManualRoomId] = useState<string>("");
-  const [messages, setMessages] = useState<Array<{id: string, payload: string, from: string, label?: string, timestamp: Date}>>([]);
-  const [newMessage, setNewMessage] = useState<string>("");
+  const [createdRoomId, setCreatedRoomId] = useState<string | null>(null);
+  const [hasCopied, setHasCopied] = useState(false);
 
-  const { joinRoom, leaveRoom, state } = useRoom({
-    onJoin: (data) => {
-      console.log('Joined the room');
-      console.log(data)
-    },
-    onLeave: () => {
-      console.log('Left the room');
-    },
+  const {
+    mutateAsync: createRoomMutation,
+    isPending: isCreatingRoom,
+  } = useMutation({
+    mutationKey: ["huddle", "create-room"],
+    mutationFn: createRoom,
   });
 
-  const { peerIds } = usePeerIds();
-
-  const { sendData } = useDataMessage({
-    onMessage(payload: string, from: string, label?: string) {
-      console.log("Received a message!");
-      console.log("Message: ", payload);
-      console.log("Sender: ", from);
-      if(label) console.log("Label: ", label);
-      
-      // Add message to the messages array
-      const newMsg = {
-        id: Date.now().toString(),
-        payload,
-        from,
-        label,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, newMsg]);
-    }
-  });
-
-  console.log({ roomId, accessToken, peerIds });
-
-  const handleCreateRoom = async () => {
+  const handleCreateRoom = useCallback(async () => {
     try {
-      setIsCreatingRoom(true);
-      const newRoomId = await createRoom();
-      setRoomId(newRoomId);
-      console.log('Room created:', newRoomId);
+      const newRoomId = await createRoomMutation();
+      setCreatedRoomId(newRoomId);
+      setManualRoomId(newRoomId);
+      setHasCopied(false);
     } catch (error) {
-      console.error('Error creating room:', error);
-    } finally {
-      setIsCreatingRoom(false);
+      console.error("Error creating room:", error);
+      alert((error as Error).message);
     }
-  };
+  }, [createRoomMutation]);
 
-  const handleGetAccessToken = async (targetRoomId?: string) => {
-    const roomIdToUse = targetRoomId || roomId || manualRoomId;
-    if (!roomIdToUse) {
-      alert('Please create a room or enter a room ID first');
+  const handleJoinRoom = useCallback(() => {
+    const trimmedRoomId = manualRoomId.trim();
+
+    if (!trimmedRoomId) {
+      alert("Please enter a room ID");
       return;
     }
 
+    router.push(`/room/${trimmedRoomId}`);
+  }, [manualRoomId, router]);
+
+  const shareUrl = createdRoomId && typeof window !== "undefined"
+    ? `${window.location.origin}/room/${createdRoomId}`
+    : "";
+
+  const handleCopyShareUrl = useCallback(async () => {
+    if (!shareUrl) return;
+
     try {
-      setIsGettingToken(true);
-      const response = await fetch(`/api/token?roomId=${roomIdToUse}`);
-      const token = await response.text();
-      setAccessToken(token);
-      // Set the roomId if we're using a manual one
-      if (targetRoomId || manualRoomId) {
-        setRoomId(roomIdToUse);
-      }
-      console.log('Access token retrieved');
+      await navigator.clipboard.writeText(shareUrl);
+      setHasCopied(true);
+      setTimeout(() => setHasCopied(false), 2500);
     } catch (error) {
-      console.error('Error getting access token:', error);
-    } finally {
-      setIsGettingToken(false);
+      console.error("Failed to copy", error);
+      alert("Unable to copy the room link. Please copy it manually.");
     }
-  };
-
-  const handleJoinRoom = async (targetRoomId?: string) => {
-    const roomIdToUse = targetRoomId || roomId || manualRoomId;
-    if (!roomIdToUse) {
-      alert('Please enter a room ID');
-      return;
-    }
-
-    // If we don't have an access token, get one first
-    if (!accessToken) {
-      await handleGetAccessToken(roomIdToUse);
-      // Wait a bit for the token to be set
-      setTimeout(() => {
-        joinRoom({
-          roomId: roomIdToUse,
-          token: accessToken
-        });
-      }, 100);
-    } else {
-      joinRoom({
-        roomId: roomIdToUse,
-        token: accessToken
-      });
-    }
-  };
-
-  const sendMessage = () => {
-    if (!newMessage.trim()) return;
-    
-    // Check if we're connected to the room
-    if (state !== 'connected') {
-      alert('You must be connected to the room to send messages. Please join the room first.');
-      return;
-    }
-    
-    try {
-      sendData({
-        to: '*',
-        payload: newMessage,
-        label: 'chat'
-      });
-      
-      setNewMessage('');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      alert('Failed to send message. Make sure you have joined the room and have proper permissions.');
-    }
-  };
+  }, [shareUrl]);
 
   if (!ready) {
     return <FullScreenLoader />;
   }
 
   // Modern RemotePeerCard component with shadcn
-  const RemotePeerCard = ({ peerId }: { peerId: string }) => (
-    <Card className="transition-all hover:shadow-md">
-      <CardContent className="flex items-center space-x-3 p-4">
-        <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-full">
-          <UserIcon className="w-5 h-5 text-green-600" />
-        </div>
-        <div className="flex-1">
-          <p className="text-sm font-medium text-foreground">Connected User</p>
-          <p className="text-xs text-muted-foreground font-mono">{peerId}</p>
-        </div>
-        <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-          Online
-        </Badge>
-      </CardContent>
-    </Card>
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {authenticated ? (
@@ -180,197 +90,33 @@ function Home() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {/* Room Controls */}
-            <Card className="lg:col-span-1">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <SignalIcon className="h-5 w-5 text-primary" />
-                  <CardTitle>Room Controls</CardTitle>
-                </div>
-                <CardDescription>
-                  Create or join a Huddle01 room to start collaborating
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Button
-                    onClick={handleCreateRoom}
-                    disabled={isCreatingRoom}
-                    className="w-full"
-                    size="lg"
-                  >
-                    {isCreatingRoom ? 'Creating Room...' : 'Create New Room'}
-                  </Button>
-                  {roomId && (
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm font-medium text-muted-foreground">Room ID</p>
-                      <p className="text-sm font-mono">{roomId}</p>
-                    </div>
-                  )}
-                </div>
+          <div className="grid grid-cols-1 gap-6 max-w-3xl">
+            <RoomControlsCard
+              manualRoomId={manualRoomId}
+              onManualRoomIdChange={(e) => setManualRoomId(e.target.value)}
+              onCreateRoom={handleCreateRoom}
+              onJoinRoom={handleJoinRoom}
+              isCreatingRoom={isCreatingRoom}
+            />
 
-                <Separator />
+            {createdRoomId && (
+              <ShareRoomCard
+                roomId={createdRoomId}
+                shareUrl={shareUrl}
+                hasCopied={hasCopied}
+                onCopy={handleCopyShareUrl}
+                onEnterRoom={() => router.push(`/room/${createdRoomId}`)}
+                onCreateAnother={() => {
+                  setCreatedRoomId(null);
+                  setManualRoomId("");
+                  setHasCopied(false);
+                }}
+              />
+            )}
 
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium">Join Existing Room</h4>
-                  <div className="space-y-2">
-                    <Input
-                      placeholder="Enter Room ID"
-                      value={manualRoomId}
-                      onChange={(e) => setManualRoomId(e.target.value)}
-                    />
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => handleGetAccessToken()}
-                        disabled={isGettingToken || (!roomId && !manualRoomId)}
-                        variant="secondary"
-                        className="flex-1"
-                      >
-                        {isGettingToken ? 'Getting Token...' : 'Get Token'}
-                      </Button>
-                    </div>
-                    {accessToken && (
-                      <div className="flex items-center gap-2 text-sm text-green-600">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        Access token ready
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => handleJoinRoom()}
-                    disabled={!roomId && !manualRoomId}
-                    className="flex-1"
-                  >
-                    Join Room
-                  </Button>
-                  <Button
-                    onClick={leaveRoom}
-                    variant="destructive"
-                    className="flex-1"
-                  >
-                    Leave Room
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Room Participants */}
-            <Card className="lg:col-span-1">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <UserIcon className="h-5 w-5 text-primary" />
-                    <CardTitle>Participants</CardTitle>
-                  </div>
-                  <Badge variant="secondary">
-                    {peerIds.length} connected
-                  </Badge>
-                </div>
-                <CardDescription>
-                  Users currently in the room
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {peerIds.length > 0 ? (
-                  <div className="space-y-3">
-                    {peerIds.map((peerId) => (
-                      <RemotePeerCard key={peerId} peerId={peerId} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <UserIcon className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No participants yet</p>
-                    <p className="text-xs">Join a room to see connected users</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Chat Section */}
-            <Card className="lg:col-span-2 xl:col-span-1">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <ChatBubbleLeftIcon className="h-5 w-5 text-primary" />
-                    <CardTitle>Chat</CardTitle>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${state === 'connected' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                    <Badge variant={state === 'connected' ? 'default' : 'secondary'}>
-                      {state === 'connected' ? 'Connected' : state || 'disconnected'}
-                    </Badge>
-                  </div>
-                </div>
-                <CardDescription>
-                  Real-time chat with room participants
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Messages Display */}
-                <div className="h-64 overflow-y-auto border rounded-md p-4 bg-muted/20">
-                  {messages.length > 0 ? (
-                    <div className="space-y-3">
-                      {messages.map((message) => (
-                        <div key={message.id} className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                {message.from}
-                              </Badge>
-                              {message.label && (
-                                <Badge variant="secondary" className="text-xs">
-                                  {message.label}
-                                </Badge>
-                              )}
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                              {message.timestamp.toLocaleTimeString()}
-                            </span>
-                          </div>
-                          <p className="text-sm bg-background p-2 rounded border">
-                            {message.payload}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-muted-foreground">
-                      <div className="text-center">
-                        <ChatBubbleLeftIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                        <p className="text-sm">No messages yet</p>
-                        <p className="text-xs">Start a conversation!</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Message Input */}
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Type a message..."
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                    className="flex-1"
-                  />
-                  <Button
-                    onClick={sendMessage}
-                    disabled={!newMessage.trim() || state !== 'connected'}
-                  >
-                    Send
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <NextStepsCard />
           </div>
-          
+
           <div className="mt-8">
             <UserObject />
           </div>
