@@ -163,7 +163,7 @@ function Landing() {
                                     <div>
                                         <CardTitle className="text-slate-800 text-xl">ETHGlobal New Delhi</CardTitle>
                                         <CardDescription className="text-slate-600 mt-2">
-                                            New Delhi-themed Monopoly with local landmarks and culture
+                                            New Delhi-themed game with local landmarks and culture
                                         </CardDescription>
                                     </div>
                                     <div className="w-5 h-5 bg-mgreen rounded-full flex items-center justify-center">
@@ -193,7 +193,7 @@ function Landing() {
                                             </span>
                                         </div>
                                         <CardDescription className="text-slate-600 mt-2">
-                                            Global-themed Monopoly with international landmarks and culture
+                                            Global-themed game with international landmarks and culture
                                         </CardDescription>
                                     </div>
                                 </div>

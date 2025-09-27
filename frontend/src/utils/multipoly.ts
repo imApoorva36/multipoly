@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
 
-export type MonopolyProperty = {
+export type Property = {
+  id: string;
   name: string;
   color: string;
   corner?: boolean;
   special?: boolean;
-  utility?: boolean;
 };
 
 export type PropertyOrientation = "bottom" | "left" | "top" | "right";
@@ -19,50 +19,50 @@ export interface PropertyPosition {
 const SQUARE_SIZE_PERCENT = 8.45;
 const CORNER_SIZE_PERCENT = 12;
 
-export const MONOPOLY_PROPERTIES: MonopolyProperty[] = [
-  { name: "START", color: "bg-white", corner: true },
-  { name: "Genesis Block", color: "bg-mred" },
-  { name: "Smart Contract", color: "bg-white", special: true },
-  { name: "Mining Pool", color: "bg-mred" },
-  { name: "Gas Fee", color: "bg-white", special: true },
-  { name: "DeFi Station", color: "bg-purple-500" },
-  { name: "Blockchain Bridge", color: "bg-mpurple" },
-  { name: "Oracle", color: "bg-white", special: true },
-  { name: "Consensus Protocol", color: "bg-mpurple" },
-  { name: "Validator Node", color: "bg-mpurple" },
-  { name: "STAKING", color: "bg-white", corner: true },
-  { name: "NFT Marketplace", color: "bg-mgreen" },
-  { name: "MetaVerse Hub", color: "bg-mgreen", utility: true },
-  { name: "DAO Treasury", color: "bg-mgreen" },
-  { name: "Liquidity Pool", color: "bg-mgreen" },
-  { name: "CEX Terminal", color: "bg-gold" },
-  { name: "Layer 2 Network", color: "bg-myellow" },
-  { name: "Governance Token", color: "bg-white", special: true },
-  { name: "Flash Loan", color: "bg-myellow" },
-  { name: "Yield Farm", color: "bg-myellow" },
-  { name: "FREE MINT", color: "bg-white", corner: true },
-  { name: "Crypto Wallet", color: "bg-mred" },
-  { name: "Random Oracle", color: "bg-white", special: true },
-  { name: "Hash Function", color: "bg-mred" },
-  { name: "Digital Signature", color: "bg-mred" },
-  { name: "DEX Protocol", color: "bg-mpurple" },
-  { name: "Token Swap", color: "bg-mpurple" },
-  { name: "Cross Chain", color: "bg-mpurple" },
-  { name: "Web3 Gateway", color: "bg-white", utility: true },
-  { name: "IPFS Storage", color: "bg-mpurple" },
-  { name: "GO TO BURN", color: "bg-white", corner: true },
-  { name: "Atomic Swap", color: "bg-mgreen" },
-  { name: "Zero Knowledge", color: "bg-mgreen" },
-  { name: "Merkle Tree", color: "bg-white", special: true },
-  { name: "Sharding Network", color: "bg-mgreen" },
-  { name: "Rollup Chain", color: "bg-myellow" },
-  { name: "Random Beacon", color: "bg-white", special: true },
-  { name: "Quantum Ledger", color: "bg-myellow" },
-  { name: "Protocol Tax", color: "bg-white", special: true },
-  { name: "Alpha Mainnet", color: "bg-myellow" },
+export const MULTIPOLY_PROPERTIES: Property[] = [
+  { id: "1", name: "START", color: "bg-white", corner: true },
+  { id: "2", name: "Akshardham Temple", color: "bg-mred" },
+  { id: "3", name: "CHANCE", color: "bg-white", special: true },
+  { id: "4", name: "Jama Masjid", color: "bg-mred" },
+  { id: "5", name: "DAO", color: "bg-white", special: true },
+  { id: "6", name: "Connaught Place", color: "bg-purple-500" },
+  { id: "7", name: "Lajpat Nagar", color: "bg-mpurple" },
+  { id: "8", name: "CHANCE", color: "bg-white", special: true },
+  { id: "9", name: "Khan Market", color: "bg-mpurple" },
+  { id: "10", name: "Karol Bagh", color: "bg-mpurple" },
+  { id: "11", name: "BURN", color: "bg-white", corner: true },
+  { id: "12", name: "Yashobhoomi", color: "bg-mgreen" },
+  { id: "13", name: "DAO", color: "bg-white", special: true },
+  { id: "14", name: "Raj Ghat", color: "bg-mgreen" },
+  { id: "15", name: "National Museum", color: "bg-mgreen" },
+  { id: "16", name: "CHANCE", color: "bg-white", special: true },
+  { id: "17", name: "Hauz Khas", color: "bg-myellow" },
+  { id: "18", name: "DAO", color: "bg-white", special: true },
+  { id: "19", name: "Select City Walk", color: "bg-myellow" },
+  { id: "20", name: "Dilli Haat", color: "bg-myellow" },
+  { id: "21", name: "FREE MINT", color: "bg-white", corner: true },
+  { id: "22", name: "Taj Mahal", color: "bg-mred" },
+  { id: "23", name: "CHANCE", color: "bg-white", special: true },
+  { id: "24", name: "Humayun's Tomb", color: "bg-mred" },
+  { id: "25", name: "Qutub Minar", color: "bg-mred" },
+  { id: "26", name: "Gurgaon", color: "bg-mpurple" },
+  { id: "27", name: "Noida", color: "bg-mpurple" },
+  { id: "28", name: "Ghaziabad", color: "bg-mpurple" },
+  { id: "29", name: "DAO", color: "bg-white", special: true },
+  { id: "30", name: "Pragati Maidan", color: "bg-mpurple" },
+  { id: "31", name: "BURN", color: "bg-white", corner: true },
+  { id: "32", name: "DU", color: "bg-mgreen" },
+  { id: "33", name: "JNU", color: "bg-mgreen" },
+  { id: "34", name: "CHANCE", color: "bg-white", special: true },
+  { id: "35", name: "IIT Delhi", color: "bg-mgreen" },
+  { id: "36", name: "Sarojini Nagar", color: "bg-myellow" },
+  { id: "37", name: "DAO", color: "bg-white", special: true },
+  { id: "38", name: "India Gate", color: "bg-myellow" },
+  { id: "39", name: "CHANCE", color: "bg-white", special: true },
+  { id: "40", name: "Red Fort", color: "bg-myellow" },
 ];
 
-export function getPropertyPosition(index: number, property: MonopolyProperty): PropertyPosition {
+export function getPropertyPosition(index: number, property: Property): PropertyPosition {
   const isCorner = Boolean(property.corner);
   const style: CSSProperties = {};
   let orientation: PropertyOrientation | null = null;
@@ -75,7 +75,7 @@ export function getPropertyPosition(index: number, property: MonopolyProperty): 
       style[index === 0 ? "right" : "left"] = "0%";
     } else {
       orientation = "bottom";
-      const position = CORNER_SIZE_PERCENT + (9 - index) * SQUARE_SIZE_PERCENT;
+      const position = CORNER_SIZE_PERCENT + (index - 1) * SQUARE_SIZE_PERCENT;
       style.right = `${position}%`;
       style.width = `${SQUARE_SIZE_PERCENT}%`;
       style.height = `${CORNER_SIZE_PERCENT}%`;
@@ -144,8 +144,4 @@ export function getAccentPositionClasses(orientation: PropertyOrientation): stri
     default:
       return "";
   }
-}
-
-export function isRailroadProperty(property: MonopolyProperty): boolean {
-  return property.color === "#000000" && !property.corner;
 }
