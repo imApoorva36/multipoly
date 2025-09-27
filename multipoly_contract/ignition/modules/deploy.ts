@@ -56,7 +56,7 @@ const MultipolyDeployment = buildModule("MultipolyDeployment", (m) => {
     });
 
     return {
-        multipoly,              // Include multipoly in the return
+        multipoly,
         defiToken,
         gameToken,
         utilToken,
