@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { MONOPOLY_PROPERTIES, getPropertyPosition, getAccentPositionClasses, isRailroadProperty, type MonopolyProperty } from "@/utils/monopoly";
-import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import Image from "next/image";
+import { BadgeQuestionMark, Globe2 } from "lucide-react";
 
 export default function MonopolyBoard() {
     const [mounted, setMounted] = useState(false);
@@ -48,24 +51,18 @@ export default function MonopolyBoard() {
             <div
                 key={`${property.name}-${index}`}
                 className={`
-                    absolute border border-slate-200 shadow-sm
-                    ${isSpecial ? "bg-slate-50/80 backdrop-blur-sm" : "bg-white/90 backdrop-blur-sm"}
+                    absolute border-black border-1 rounded-none
+                    bg-mgray
                     flex flex-col items-center justify-center
                     font-medium text-center cursor-pointer
                     transition-all duration-300 overflow-hidden
-                    hover:bg-white hover:shadow-md hover:border-slate-300 hover:-translate-y-0.5
-                    rounded-sm
                     ${textSizeClass}
                 `}
                 style={style}
             >
                 {!isCorner && !isSpecial && !isUtility && !isRailroad && orientation && (
                     <div
-                        className={`absolute rounded-sm ${accentPositionClass}`}
-                        style={{
-                            backgroundColor: property.color,
-                            boxShadow: "inset 0 1px 2px rgba(0,0,0,0.1)",
-                        }}
+                        className={`absolute rounded-none ${accentPositionClass} ${property.color}`}
                     />
                 )}
                 {isRailroad && orientation && (
@@ -103,66 +100,13 @@ export default function MonopolyBoard() {
         <SidebarProvider>
             <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex flex-row">
                 {/* Sidebar on the left */}
-                <Sidebar className="border-r border-slate-200 bg-white/90 backdrop-blur-md">
-                    <div className="flex flex-col h-full p-4 gap-4">
-                        <h2 className="text-lg font-bold mb-2">Menu</h2>
-                        <nav className="flex flex-col gap-2">
-                            <a href="#" className="hover:text-emerald-700">Home</a>
-                            <a href="#" className="hover:text-emerald-700">Rooms</a>
-                            <a href="#" className="hover:text-emerald-700">Profile</a>
-                        </nav>
-                        <div className="mt-auto text-xs text-slate-400">Multipoly © 2025</div>
-                    </div>
-                </Sidebar>
+                <AppSidebar />
                 {/* Main content */}
-                <main className="flex-1 flex flex-col items-center justify-center p-6">
-                    <div className="mb-8 bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 max-w-4xl">
-                        <div className="grid md:grid-cols-4 gap-3 text-sm text-slate-600 mb-4">
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                <span>Mouse wheel: Z rotation</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                <span>Shift + wheel: Zoom</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                                <span>Ctrl/Cmd + wheel: X tilt</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                                <span>Alt + wheel: Y turn</span>
-                            </div>
-                        </div>
-                        <div className="flex justify-center gap-2">
-                            <button 
-                                onClick={() => {
-                                    setRotationX(15);
-                                    setRotationY(0);
-                                    setRotationZ(0);
-                                    setScale(1);
-                                }}
-                                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors text-sm font-medium"
-                            >
-                                Reset View
-                            </button>
-                            <button 
-                                onClick={() => {
-                                    setRotationX(0);
-                                    setRotationY(0);
-                                    setRotationZ(0);
-                                }}
-                                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors text-sm font-medium"
-                            >
-                                Flat View
-                            </button>
-                        </div>
-                    </div>
+                <main className="flex-1 bg-[url('/delhi-bg.png')] flex flex-col items-center justify-center p-6 relative">
                     <div className="relative" style={{ perspective: "1200px" }}>
                         <div
                             id="board"
-                            className="relative bg-gradient-to-br from-emerald-50 to-emerald-100 shadow-2xl border border-white/30 rounded-3xl transition-transform duration-200 ease-out backdrop-blur-sm"
+                            className="relative bg-white transition-transform duration-200 ease-out backdrop-blur-sm"
                             style={{
                                 width: "800px",
                                 height: "800px",
@@ -173,41 +117,71 @@ export default function MonopolyBoard() {
                                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.3)'
                             }}
                         >
-                            <div className="absolute inset-0 m-20 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl flex items-center justify-center border border-emerald-200/50 shadow-inner">
-                                <div className="text-center">
-                                    <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-emerald-900 mb-4 tracking-tight">
-                                        MULTIPOLY
-                                    </h1>
-                                    <div className="text-lg text-emerald-700/80 font-medium">
-                                        <p>Web3 Trading Game</p>
-                                    </div>
+                            <div className="absolute inset-0 m-20 rounded-2xl">
+                                <div className="absolute top-20 left-12 border-4 border-mred w-36 h-22 rotate-[125deg] flex items-center justify-center">
+                                    <BadgeQuestionMark className="text-mred w-10 h-10" />
+                                </div>
+                                
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Image src="/multipoly.png" alt="" width={400} height={400} />
+                                </div>
+                                <div className="absolute bottom-20 right-12 border-4 border-mblue w-36 h-22 rotate-[125deg] flex items-center justify-center">
+                                    <Globe2 className="text-mblue w-10 h-10" />
                                 </div>
                             </div>
                             {/* Generate all properties */}
                             {MONOPOLY_PROPERTIES.map((property, index) => renderProperty(property, index))}
                         </div>
-                        <div className="mt-6 text-center">
-                            <div className="inline-flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30 shadow-lg">
-                                <div className="flex items-center gap-2 text-sm text-slate-600">
-                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                                    <span>Z: {Math.round(rotationZ)}°</span>
-                                </div>
-                                <div className="w-px h-4 bg-slate-300"></div>
-                                <div className="flex items-center gap-2 text-sm text-slate-600">
-                                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                                    <span>X: {Math.round(rotationX)}°</span>
-                                </div>
-                                <div className="w-px h-4 bg-slate-300"></div>
-                                <div className="flex items-center gap-2 text-sm text-slate-600">
-                                    <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
-                                    <span>Y: {Math.round(rotationY)}°</span>
-                                </div>
-                                <div className="w-px h-4 bg-slate-300"></div>
-                                <div className="flex items-center gap-2 text-sm text-slate-600">
-                                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                                    <span>Scale: {(scale * 100).toFixed(0)}%</span>
-                                </div>
+                    </div>
+                    
+                    {/* Subtle rotation stats and controls at bottom right */}
+                    <div className="fixed bottom-1 right-1 bg-white/60 border border-black backdrop-blur-sm rounded-none shadow-lg p-4 text-xs text-slate-600 max-w-xs">
+                        <div className="grid grid-cols-1 gap-2 mb-3 text-xs">
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-1 h-1 bg-black rounded-full"></div>
+                                <span>Z: {Math.round(rotationZ)}°</span>
                             </div>
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-1 h-1 bg-black rounded-full"></div>
+                                <span>X: {Math.round(rotationX)}°</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-1 h-1 bg-black rounded-full"></div>
+                                <span>Y: {Math.round(rotationY)}°</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-1 h-1 bg-black rounded-full"></div>
+                                <span>{(scale * 100).toFixed(0)}%</span>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 gap-1 mb-2">
+                            <button 
+                                onClick={() => {
+                                    setRotationX(15);
+                                    setRotationY(0);
+                                    setRotationZ(0);
+                                    setScale(1);
+                                }}
+                                className="px-2 py-1 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 rounded text-[10px] font-medium transition-colors flex-1"
+                            >
+                                Reset
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setRotationX(0);
+                                    setRotationY(0);
+                                    setRotationZ(0);
+                                }}
+                                className="px-2 py-1 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 rounded text-[10px] font-medium transition-colors flex-1"
+                            >
+                                Flat
+                            </button>
+                        </div>
+                        <div className="text-[9px] text-slate-500 space-y-0.5">
+                            <div>Wheel: Z rotate</div>
+                            <div>⇧+Wheel: Zoom </div>
+                            <div>⌃+Wheel: X tilt</div>
+                            <div>⌥+Wheel: Y turn</div>
                         </div>
                     </div>
                 </main>
