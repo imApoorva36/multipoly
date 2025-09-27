@@ -3,7 +3,45 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+// Interfaces
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function mint(address to, uint256 amount) external;
+    function burnFrom(address from, uint256 amount) external;
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+}
+
+interface IPropertyNFT {
+    struct Property {
+        address owner;
+        string name;
+        uint256 position;
+        address tokenAddress;
+        uint256 purchaseValue;
+        uint256 rentAmount;
+    }
+
+    function mint(
+        address to,
+        string memory name,
+        uint256 position,
+        address tokenAddress,
+        uint256 purchaseValue
+    ) external returns (uint256);
+
+    function _ownerOf(uint256 tokenId) external view returns (address);
+
+    function getProperty(uint256 tokenId) external view returns (Property memory);
+}
 
 contract Multipoly is Ownable {
     struct PlayerPos {
@@ -15,14 +53,9 @@ contract Multipoly is Ownable {
     struct PlayerProperties {
         address user_account;
         uint256 game_id;
-        address nft_address;
+        uint256 nft_id;
         uint256 stake_amount;
         address token;
-    }
-
-    // Interfaces
-    interface IToken {
-       function mint(address to, uint256 amount) external;
     }
 
     // Mappings
@@ -43,7 +76,7 @@ contract Multipoly is Ownable {
     // Events
     event PlayerPositionUpdated(uint256 indexed game_id, address indexed user_account, uint256 position);
     event PlayerTurnSet(uint256 indexed game_id, address indexed user_account);
-    event PlayerPropertiesSet(address indexed user_account, uint256 indexed game_id, address nft_address, uint256 stake_amount, address token);
+    event PlayerPropertiesSet(address indexed user_account, uint256 indexed game_id, uint256 nft_id, uint256 stake_amount, address token);
     event PlayerJoinedGame(uint256 indexed game_id, address indexed user_account);
     event PlayerLeftGame(uint256 indexed game_id, address indexed user_account);
     event GameCreated(uint256 indexed game_id);
@@ -145,24 +178,19 @@ contract Multipoly is Ownable {
     function setPlayerProperties(
         address user_account,
         uint256 game_id,
-        address nft_address,
-        uint256 stake_amount,
-        address token
-    ) external validAddress(user_account) validAddress(token) {
+        uint256 nft_id
+    ) internal validAddress(user_account) {
         require(isPlayerInGame[game_id][user_account], "Player not in game");
-        if (nft_address != address(0)) {
-            require(IERC721(nft_address).balanceOf(user_account) > 0, "User does not own NFT");
-        }
         
         playerProperties[user_account][game_id] = PlayerProperties({
             user_account: user_account,
             game_id: game_id,
-            nft_address: nft_address,
-            stake_amount: stake_amount,
-            token: token
+            nft_id: nft_id,
+            stake_amount: 0,
+            token: address(0)
         });
         
-        emit PlayerPropertiesSet(user_account, game_id, nft_address, stake_amount, token);
+        emit PlayerPropertiesSet(user_account, game_id, nft_id, 0, address(0));
     }
     
     function getPlayerProperties(
@@ -175,15 +203,18 @@ contract Multipoly is Ownable {
     function updatePlayerStakeAmount(
         address user_account,
         uint256 game_id,
-        uint256 new_stake_amount
+        uint256 new_stake_amount,
+        address new_token_address
     ) external playerInGame(game_id, user_account) {
         require(msg.sender == owner() || msg.sender == user_account, "Unauthorized");
         
         playerProperties[user_account][game_id].stake_amount = new_stake_amount;
+        playerProperties[user_account][game_id].token = new_token_address;
+
         emit PlayerPropertiesSet(
             user_account, 
             game_id, 
-            playerProperties[user_account][game_id].nft_address,
+            playerProperties[user_account][game_id].nft_id,
             new_stake_amount,
             playerProperties[user_account][game_id].token
         );
@@ -192,19 +223,19 @@ contract Multipoly is Ownable {
     function updatePlayerNFT(
         address user_account,
         uint256 game_id,
-        address new_nft_address
+        uint256 new_nft_id,
+        address nft_contract
     ) external playerInGame(game_id, user_account) {
         require(msg.sender == owner() || msg.sender == user_account, "Unauthorized");
         
-        if (new_nft_address != address(0)) {
-            require(IERC721(new_nft_address).balanceOf(user_account) > 0, "User does not own NFT");
-        }
+        require(IPropertyNFT(nft_contract)._ownerOf(new_nft_id) == user_account, "User does not own NFT");
+
         
-        playerProperties[user_account][game_id].nft_address = new_nft_address;
+        playerProperties[user_account][game_id].nft_id = new_nft_id;
         emit PlayerPropertiesSet(
             user_account, 
             game_id, 
-            new_nft_address,
+            new_nft_id,
             playerProperties[user_account][game_id].stake_amount,
             playerProperties[user_account][game_id].token
         );
@@ -312,11 +343,49 @@ contract Multipoly is Ownable {
         return positions;
     }
 
+    // Token functions
     function mintAllTokens(address player_address, address token_address_1, address token_address_2, address token_address_3, address token_address_4) external{
         require(token_address_1 != address(0) && token_address_2 != address(0) && token_address_3 != address(0) && token_address_4 != address(0), "Invalid token address");
-        IToken(token_address_1).mint(player_address, 100);
-        IToken(token_address_2).mint(player_address, 100);
-        IToken(token_address_3).mint(player_address, 100);
-        IToken(token_address_4).mint(player_address, 100);
+        IERC20(token_address_1).mint(player_address, 100);
+        IERC20(token_address_2).mint(player_address, 100);
+        IERC20(token_address_3).mint(player_address, 100);
+        IERC20(token_address_4).mint(player_address, 100);
+    }
+
+    function burnAllTokens(address player_address, address token_address_1, address token_address_2, address token_address_3, address token_address_4) external{
+        require(token_address_1 != address(0) && token_address_2 != address(0) && token_address_3 != address(0) && token_address_4 != address(0), "Invalid token address");
+        uint256 amount_1 = IERC20(token_address_1).balanceOf(player_address);
+        uint256 amount_2 = IERC20(token_address_2).balanceOf(player_address);
+        uint256 amount_3 = IERC20(token_address_3).balanceOf(player_address);
+        uint256 amount_4 = IERC20(token_address_4).balanceOf(player_address);
+        IERC20(token_address_1).burnFrom(player_address, amount_1);
+        IERC20(token_address_2).burnFrom(player_address, amount_2);
+        IERC20(token_address_3).burnFrom(player_address, amount_3);
+        IERC20(token_address_4).burnFrom(player_address, amount_4);
+    }
+
+    function debit(address player_address, address token_address, uint256 amount) public {
+        require(token_address != address(0), "Invalid token address");
+        uint256 current_balance = IERC20(token_address).balanceOf(player_address);
+        require(current_balance >= amount, "Insufficient balance");
+        IERC20(token_address).burnFrom(player_address, amount);
+    }
+
+    function credit(address player_address, address token_address, uint256 amount) public {
+        require(token_address != address(0), "Invalid token address");
+        IERC20(token_address).mint(player_address, amount);
+    }
+
+    // NFT functions
+    function purchaseProperty(address player_address, address property_nft_address, string memory name, uint256 position, address token_address, uint256 purchase_value, uint256 game_id) external{
+        require(property_nft_address != address(0), "Invalid NFT address");
+        debit(player_address, token_address, purchase_value);
+        uint256 nftId = IPropertyNFT(property_nft_address).mint(player_address, name, position, token_address, purchase_value);
+        setPlayerProperties(player_address, game_id, nftId);
+    }
+
+    function getPropertyDetails(address property_nft_address, uint256 token_id) external view returns (IPropertyNFT.Property memory) {
+        require(property_nft_address != address(0), "Invalid NFT address");
+        return IPropertyNFT(property_nft_address).getProperty(token_id);
     }
 }

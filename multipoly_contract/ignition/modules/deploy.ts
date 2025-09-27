@@ -8,59 +8,62 @@ const MultipolyDeployment = buildModule("MultipolyDeployment", (m) => {
     const deployer = m.getAccount(0);
     
     // Token 1
-    const defiToken = m.contract("Token", [
-        "DeFi Token",           // name
-        "DEFI",                 // symbol
-        parseUnits("5000000", 18), // initial supply (5M tokens with 18 decimals)
-        18,                     // decimals
-        deployer,               // initial owner
-        multipoly               // minter contract (use contract instance, not .address)
+    const emeraldToken = m.contract("Token", [
+        "Emerald",          
+        "EMRD",                 
+        parseUnits("5000000", 18),
+        18,                     
+        deployer,               
+        multipoly               
     ], {
-        id: "DeFiToken"
+        id: "Emerald"
     });
 
     // Token 2
-    const gameToken = m.contract("Token", [
-        "Gaming Token",         // name
-        "GAME",                 // symbol
-        parseUnits("5000000", 18), // initial supply (5M tokens with 18 decimals)
-        18,                     // decimals
-        deployer,               // initial owner
-        multipoly               // minter contract
+    const goldenToken = m.contract("Token", [
+        "Golden",         
+        "GLDN",                 
+        parseUnits("5000000", 18),
+        18,                     
+        deployer,               
+        multipoly               
     ], {
-        id: "GamingToken"
+        id: "Golden"
     });
 
     // Token 3
-    const utilToken = m.contract("Token", [
-        "Utility Token",        // name
-        "UTIL",                 // symbol
-        parseUnits("5000000", 18), // initial supply (5M tokens with 18 decimals)
-        18,                     // decimals
-        deployer,               // initial owner
-        multipoly               // minter contract
+    const rubyToken = m.contract("Token", [
+        "Ruby",        
+        "RUBY",                 
+        parseUnits("5000000", 18),
+        18,                     
+        deployer,               
+        multipoly               
     ], {
-        id: "UtilityToken"
+        id: "Ruby"
     });
 
     // Token 4
-    const rewardToken = m.contract("Token", [
-        "Reward Token",         // name
-        "RWRD",                 // symbol
-        parseUnits("5000000", 18), // initial supply (5M tokens with 18 decimals)
-        18,                     // decimals
-        deployer,               // initial owner
-        multipoly               // minter contract
+    const amethystToken = m.contract("Token", [
+        "Amethyst",         
+        "AMTY",                 
+        parseUnits("5000000", 18),
+        18,                     
+        deployer,               
+        multipoly               
     ], {
-        id: "RewardToken"
+        id: "Amethyst"
     });
 
+    
+    const propertyNFT = m.contract("PropertyNFT");
     return {
         multipoly,
-        defiToken,
-        gameToken,
-        utilToken,
-        rewardToken
+        emeraldToken,
+        goldenToken,
+        rubyToken,
+        amethystToken,
+        propertyNFT
     };
 });
 
