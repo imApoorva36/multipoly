@@ -148,14 +148,11 @@ function Home() {
             />
             <div className="z-10 flex flex-col items-center justify-center w-full h-full">
               <div className="bg-white/90 backdrop-blur-sm border-2 border-black rounded-none p-8 shadow-lg max-w-2xl mx-4">
-                <div className="flex h-12 items-center justify-center border-2 border-mblue bg-mblue/10 rounded-none px-6 text-lg text-mblue font-bold mb-6">
-                  Multipoly Demo
-                </div>
                 <div className="text-center text-slate-800 text-6xl font-bold mb-4">
                   Welcome to Multipoly
                 </div>
                 <div className="text-center text-slate-600 text-xl leading-relaxed mb-8">
-                  The ultimate blockchain-powered multiplayer property game
+                  A web3 educational game to learn about blockchain and crypto
                 </div>
                 <Button
                   size="lg"

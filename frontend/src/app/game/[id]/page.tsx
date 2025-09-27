@@ -20,8 +20,8 @@ export default function MonopolyBoard() {
     const [ provider, setProvider ] = useState<EIP1193Provider | null>(null)
     const [ walletClient, setWalletClient ] = useState<WalletClient | null>(null)
 
-    let { wallets } = useWallets()
-    let wallet = wallets[0]
+    const { wallets } = useWallets()
+    const wallet = wallets[0]
 
     useEffect(() => {
         setMounted(true);
@@ -49,14 +49,21 @@ export default function MonopolyBoard() {
 
     useEffect(() => {
         async function getWalletClient () {
-            let p = await wallet.getEthereumProvider()
-            let wc = createWalletClient({
-                account: wallet.address as Hex,
-                chain: testnet,
-                transport: custom(p)
-            })
-            setProvider(p)
-            setWalletClient(wc)
+            // Check if wallet exists before trying to access its properties
+            if (wallet) {
+                try {
+                    const p = await wallet.getEthereumProvider()
+                    const wc = createWalletClient({
+                        account: wallet.address as Hex,
+                        chain: testnet,
+                        transport: custom(p)
+                    })
+                    setProvider(p)
+                    setWalletClient(wc)
+                } catch (error) {
+                    console.error("Error getting Ethereum provider:", error)
+                }
+            }
         }
         getWalletClient()
 

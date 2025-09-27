@@ -8,6 +8,7 @@ import { ChatBubbleLeftIcon } from "@heroicons/react/16/solid"
 import { Input } from "../ui/input"
 import { useEffect, useState } from "react"
 import { useWallets } from "@privy-io/react-auth"
+import { Separator } from "../ui/separator"
 
 
 
@@ -15,7 +16,7 @@ import { useWallets } from "@privy-io/react-auth"
 export default function ChatSection () {
 
     const params = useParams<{ id: string }>();
-    let roomId = params.id
+    const roomId = params.id
     const {
         state,
         messages,
@@ -29,11 +30,11 @@ export default function ChatSection () {
         isFetchingToken,
         tokenError,
       } = useHuddleRoom(roomId);
-    let { updateMetadata, metadata, peerId } = useLocalPeer<Metadata>()
+    const { updateMetadata, metadata, peerId } = useLocalPeer<Metadata>()
     const [newMessage, setNewMessage] = useState("");
 
-    let {wallets} = useWallets()
-    let wallet = wallets[0]
+    const {wallets} = useWallets()
+    const wallet = wallets[0]
 
       useEffect(() => {
         if (!roomId) {
@@ -58,14 +59,14 @@ export default function ChatSection () {
         });
       }, [roomId, state, isJoiningRoom, isFetchingToken, joinRoom]);
 
-    function resolveMetadata (peerId: string) {
+    function useResolveMetadata (peerId: string) {
         let m: Metadata = {name: "", image: "https://api.dicebear.com/9.x/identicon/svg?seed=0"}
         if (peerId) {
-        let remotePeer = useRemotePeer<Metadata>({peerId})
+        const remotePeer = useRemotePeer<Metadata>({peerId})
         m = remotePeer.metadata || m
         }
         else {
-        let localPeer = useLocalPeer<Metadata>()
+        const localPeer = useLocalPeer<Metadata>()
         m = localPeer.metadata || m
         }
 
@@ -77,27 +78,37 @@ export default function ChatSection () {
     }
 
     function MessageBubble ({ message }: { message: ChatMessage }) {
-      let metadata = resolveMetadata(message.from == peerId ? "" : message.from)
+      const metadata = useResolveMetadata(message.from == peerId ? "" : message.from)
+      const isOwn = message.from === peerId;
+      
       return (
-        <div key={message.id} className="space-y-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
-                {message.from == peerId ? "You" : metadata.name}
-              </Badge>
-              {message.label && (
-                <Badge variant="secondary" className="text-xs">
-                  {message.label}
-                </Badge>
-              )}
-            </div>
-            <span className="text-xs text-muted-foreground">
+        <div 
+          className={`flex flex-col space-y-1 ${isOwn ? "items-end" : "items-start"}`}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500">
               {message.timestamp.toLocaleTimeString()}
             </span>
+            <Badge 
+              variant="outline" 
+              className={`rounded-none border text-xs font-medium ${
+                isOwn ? "border-mred text-mred bg-mred/10" : "border-slate-400 text-slate-600 bg-slate-100"
+              }`}
+            >
+              {isOwn ? "You" : metadata.name}
+            </Badge>
           </div>
-          <p className="text-sm bg-background p-2 rounded border">
-            {message.payload}
-          </p>
+          <div 
+            className={`max-w-[80%] rounded-none p-3 border-2 ${
+              isOwn 
+                ? "bg-mred/10 border-mred text-slate-800" 
+                : "bg-slate-100 border-slate-300 text-slate-800"
+            }`}
+          >
+            <p className="text-sm whitespace-pre-wrap break-words">
+              {message.payload}
+            </p>
+          </div>
         </div>
       )
     }
@@ -111,50 +122,95 @@ export default function ChatSection () {
         }
     };
 
+
     return (
-        <div className="p-4 space-y-4">
-            <Badge variant="outline" className="inline-flex items-center gap-1">
-                <div className={`w-2 h-2 rounded-full ${state === "connected" ? "bg-green-500" : "bg-yellow-500"}`} />
-                {state ?? "disconnected"}
-            </Badge>
-            <div className="h-64 overflow-y-auto border rounded-md p-4 bg-muted/20">
-            {messages.length > 0 ? (
-                <div className="space-y-3">
-                {messages.map((message) => (
-                    <MessageBubble key={message.id} message={message} />
-                ))}
+        <div className="h-[90vh] flex flex-col">
+          <hr className="border-black border-1 m-3"/>
+            <div className="p-4 pb-2">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 border-2 border-mred bg-gradient-to-br from-mred/20 to-mred/30 rounded-none flex items-center justify-center">
+                            <ChatBubbleLeftIcon className="h-5 w-5 text-mred" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl text-slate-800 font-bold">Game Chat</h2>
+                        </div>
+                    </div>
+                    
+                    <Badge 
+                        variant={state === "connected" ? "default" : "secondary"}
+                        className={`rounded-none border-2 font-bold transition-all ${
+                        state === "connected" 
+                            ? "bg-mgreen/20 text-mgreen border-mgreen animate-pulse" 
+                            : "bg-myellow/20 text-myellow border-myellow"
+                        }`}
+                    >
+                        {state === "connected" ? "Live" : "Connecting"}
+                    </Badge>
                 </div>
-            ) : (
-                <div className="flex items-center justify-center h-full text-muted-foreground">
-                <div className="text-center">
-                    <ChatBubbleLeftIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No messages yet</p>
-                    <p className="text-xs">Start a conversation!</p>
-                </div>
-                </div>
-            )}
+                
+                {(tokenError || joinError) && (
+                    <div className="bg-mred/20 border-2 border-mred rounded-none p-3 mt-2">
+                        <p className="text-sm text-mred font-bold">
+                            ❌ {(tokenError ?? joinError)?.message}
+                        </p>
+                    </div>
+                )}
             </div>
+            
+            <div className="flex-1 flex flex-col space-y-4 p-4 pt-0 h-full overflow-hidden">
+              {/* Messages Container */}
+              <div className="flex-1 overflow-hidden border-2 border-black rounded-none bg-gradient-to-br from-slate-50 to-slate-100">
+                <div className="h-full overflow-y-auto p-4 scroll-smooth" id="messages-container">
+                  {messages.length > 0 ? (
+                    <div className="space-y-4">
+                      {messages.map((message) => (
+                        <MessageBubble key={message.id} message={message} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-slate-500">
+                      <div className="text-center p-8">
+                        <div className="w-16 h-16 border-2 border-mred bg-mred/10 rounded-none flex items-center justify-center mx-auto mb-4">
+                          <ChatBubbleLeftIcon className="h-8 w-8 text-mred" />
+                        </div>
+                        <p className="text-xl font-bold text-slate-700 mb-2">No messages yet</p>
+                        <p className="text-sm text-slate-500">
+                          🎮 Be the first to start the conversation!
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-
-            <div className="flex gap-2">
-            <Input
-                placeholder="Type a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSendMessage();
-                }
-                }}
-                className="flex-1"
-            />
-            <Button
-                onClick={handleSendMessage}
-                disabled={!newMessage.trim() || state !== "connected" || isSendingMessage}
-            >
-                {isSendingMessage ? "Sending..." : "Send"}
-            </Button>
+              {/* Message Input */}
+              <div className="flex gap-3 mt-auto">
+                <Input
+                  placeholder="Type your message here..."
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                  disabled={state !== "connected"}
+                  className="flex-1 border-2 border-black rounded-none bg-white/80 focus:bg-white focus:border-mred transition-all duration-300 text-base"
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!newMessage.trim() || state !== "connected" || isSendingMessage}
+                  className={`border-2 border-black rounded-none font-bold px-6 transition-all duration-300 ${
+                    state === "connected"
+                      ? "bg-mgreen hover:bg-mgreen/80 text-white hover:shadow-lg"
+                      : "bg-slate-300 text-slate-500 cursor-not-allowed"
+                  }`}
+                >
+                  {isSendingMessage ? "Sending..." : "Send"}
+                </Button>
+              </div>
             </div>
         </div>
     )
