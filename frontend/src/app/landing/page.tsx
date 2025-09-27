@@ -53,7 +53,7 @@ function Landing() {
         />
         
         {/* Navigation */}
-        <nav className="relative z-10 p-4 bg-white/90 border-b-2 border-black">
+        <nav className="relative z-10 p-4 bg-white/50 border-b-2 border-black">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-bold text-slate-900">Multipoly</h1>
@@ -72,14 +72,14 @@ function Landing() {
         {/* Hero Content */}
         <div className="relative z-10 flex-1 flex items-center justify-center p-6">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-white/20 backdrop-blur-sm border-4 border-black rounded-none p-12 shadow-lg">
+            <div className="bg-white/50 backdrop-blur-sm border-4 border-black rounded-none p-12 shadow-lg">
               
-              <h1 className="text-6xl font-bold text-slate-100 mb-6 leading-tight">
+              <h1 className="text-6xl font-bold text-mblue mb-6 leading-tight">
                 Welcome to{" "}
                 <span className="text-black">Multipoly</span>
               </h1>
               
-              <p className="text-xl text-slate-200 leading-relaxed mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-slate-700 leading-relaxed mb-8 max-w-2xl mx-auto">
                 The ultimate blockchain-powered multiplayer property game. Own real digital assets, 
                 compete with friends globally, and experience Monopoly like never before.
               </p>

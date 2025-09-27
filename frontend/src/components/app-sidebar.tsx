@@ -89,7 +89,7 @@ export function AppSidebar({ walletClient } : { walletClient: WalletClient | nul
   }
 
   return (
-    <Sidebar className="border-r-4 border-black">
+    <Sidebar className="border-r-4 h-full border-black">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
