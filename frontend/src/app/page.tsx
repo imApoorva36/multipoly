@@ -18,7 +18,7 @@ import { createWalletClient, custom, Hex, WatchAssetParams } from "viem"
 import { testnet } from "@/providers/WalletProvider"
 import { Check, Plus } from "lucide-react"
 
-let tokens = [
+export const tokens = [
   {
     type: "ERC20",
     options: {

@@ -70,13 +70,13 @@ export function ShareRoomCard({
 
         <div className="flex gap-2">
           <Button 
-            className="flex-1 bg-mpurple hover:bg-mpurple/80 text-white border-2 border-black rounded-none font-bold py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300" 
+            className="flex-1 bg-mpurple hover:bg-mpurple/80 text-white border-2 border-black rounded-none font-bold py-5 text-lg shadow-lg hover:shadow-xl transition-all duration-300" 
             onClick={onEnterRoom}
           >
             Enter Room
           </Button>
           <Button 
-            className="flex-1 bg-white hover:bg-mgray text-black border-2 border-black rounded-none font-bold transition-all duration-300" 
+            className="flex-1 bg-white hover:bg-mgray text-black border-2 border-black rounded-none font-bold py-5 transition-all duration-300" 
             variant="ghost" 
             onClick={onCreateAnother}
           >
