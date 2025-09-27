@@ -1,0 +1,59 @@
+{
+	"contracts": {
+		"FungibleToken": {
+			"source": "",
+			"aliases": {
+				"emulator": "ee82856bf20e2aa6"
+			}
+		},
+		"FungibleTokenMetadataViews": {
+			"source": "",
+			"aliases": {
+				"emulator": "ee82856bf20e2aa6"
+			}
+		},
+		"MetadataViews": {
+			"source": "",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"ViewResolver": {
+			"source": "",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"YieldToken": "cadence/contracts/YieldToken.cdc"
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testing": "127.0.0.1:3569",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": {
+				"type": "file",
+				"location": "emulator-account.pkey"
+			}
+		},
+		"test-acct": {
+			"address": "179b6b1cb6755e31",
+			"key": "394b933a577798d83900e12fae1603071b3d7d124225f08d4f3ad766cb3d2107"
+		},
+		"test-acct-2": {
+			"address": "f3fcd2c1a78f5eee",
+			"key": "ec7c16bbd8b9716decb2341c26b0757dc8c1ca17404dabf7319a256559de8574"
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": [
+				"YieldToken"
+			]
+		}
+	}
+}

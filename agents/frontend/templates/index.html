@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Multipoly Agents</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        margin: 24px;
+      }
+
+      .row {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap; /* In case screen is narrow */
+      }
+
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        flex: 1;
+        min-width: 300px;
+      }
+
+      label {
+        display: block;
+        margin-top: 8px;
+        font-weight: 600;
+      }
+
+      textarea,
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+
+      button {
+        margin-top: 8px;
+        padding: 8px 12px;
+      }
+
+      pre {
+        background: #f7f7f7;
+        padding: 8px;
+        border-radius: 6px;
+        white-space: pre-wrap; /* Allow wrapping */
+        word-wrap: break-word; /* Break long words */
+        overflow-wrap: break-word;
+        max-width: 100%; /* Prevent overflow */
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Multipoly Agents Demo</h1>
+    <div class="row">
+      <div class="card">
+        <h2>Chatbot</h2>
+        <label>Message</label>
+        <textarea id="chatMsg" rows="4">Hello agent!</textarea>
+        <label>Model</label>
+        <input id="chatModel" value="asi1-fast" />
+        <button onclick="sendChat()">Send</button>
+        <h4>Response</h4>
+        <pre id="chatOut"></pre>
+      </div>
+
+      <div class="card">
+        <h2>AI Tutor</h2>
+        <label>Game State (JSON)</label>
+        <textarea id="state" rows="8">{
+  "position": "Red_Fort",
+  "cash": 1000,
+  "properties": ["Red_Fort", "Connaught_Place"],
+  "tokens": {
+    "red": 4,
+    "blue": 3,
+    "green": 6,
+    "yellow": 5
+  },
+  "game_phase": "early"
+}</textarea>
+        <label>Question (optional)</label>
+        <input id="question" placeholder="Should I buy Cyber City or save for India Gate?" />
+        <div>
+          <label><input type="checkbox" id="refresh" /> Force refresh (ignore cache)</label>
+        </div>
+        <button onclick="askTutor()">Get Advice</button>
+        <h4>Advice</h4>
+        <pre id="tutorOut"></pre>
+      </div>
+    </div>
+
+    <script>
+      async function sendChat() {
+        const message = document.getElementById("chatMsg").value;
+        const model = document.getElementById("chatModel").value;
+        const r = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: "u1", message, model }),
+        });
+        const j = await r.json();
+        document.getElementById("chatOut").textContent = JSON.stringify(j, null, 2);
+      }
+
+      async function askTutor() {
+        const stateTxt = document.getElementById("state").value;
+        const question = document.getElementById("question").value;
+        const force_refresh = document.getElementById("refresh").checked;
+        let state = {};
+        try {
+          state = JSON.parse(stateTxt);
+        } catch (e) {}
+        const r = await fetch("/api/advise", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: "u1", state, question, force_refresh }),
+        });
+        const j = await r.json();
+        document.getElementById("tutorOut").textContent = JSON.stringify(j, null, 2);
+      }
+    </script>
+  </body>
+</html>
