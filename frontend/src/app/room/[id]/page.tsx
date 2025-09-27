@@ -18,7 +18,7 @@ import UserObject from "@/components/ui/user-object";
 import { ChatMessage, useHuddleRoom } from "@/hooks/useHuddleRoom";
 import { useLocalPeer, useRemotePeer } from "@huddle01/react"
 
-interface Metadata {
+export interface Metadata {
   name: string
   image: string
 }

@@ -14,7 +14,44 @@ import { RoomControlsCard } from "@/components/lobby/RoomControlsCard";
 import { ShareRoomCard } from "@/components/lobby/ShareRoomCard";
 import { NextStepsCard } from "@/components/lobby/NextStepsCard";
 import { useLocalPeer } from "@huddle01/react"
+import { createWalletClient, custom, Hex, WatchAssetParams } from "viem"
+import { testnet } from "@/providers/WalletProvider"
+import { Check, Plus } from "lucide-react"
 
+let tokens = [
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_AMETHYST,
+      decimals: 18,
+      symbol: 'AMTY',
+    },
+  },
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_EMRALD,
+      decimals: 18,
+      symbol: 'EMRD',
+    },
+  },
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_GOLDEN,
+      decimals: 18,
+      symbol: 'GLDN',
+    },
+  },
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_RUBY,
+      decimals: 18,
+      symbol: 'RUBY',
+    },
+  },
+] as WatchAssetParams[]
 
 function Home() {
   const { ready, authenticated, logout, login } = usePrivy();
@@ -22,9 +59,28 @@ function Home() {
   const [manualRoomId, setManualRoomId] = useState<string>("");
   const [createdRoomId, setCreatedRoomId] = useState<string | null>(null);
   const [hasCopied, setHasCopied] = useState(false);
+  const [ tokensAdded, setTokensAdded ] = useState(false)
 
   let {wallets} = useWallets()
   let wallet = wallets[0]
+
+  async function addTokens () {
+    if (tokensAdded) return
+
+    let p = await wallet.getEthereumProvider()
+    let wc = createWalletClient({
+      account: wallet.address as Hex,
+      chain: testnet,
+      transport: custom(p)
+    })
+
+    try {
+      await Promise.all(tokens.map(token => wc.watchAsset(token)))
+    } catch {}
+    finally {
+      setTokensAdded(true)
+    }
+  }
 
   useEffect(() => {
     if (!wallet) return
@@ -94,10 +150,25 @@ function Home() {
               <h1 className="text-3xl font-bold text-foreground">Multipoly Room</h1>
               <p className="text-muted-foreground">Connect and chat with other players</p>
             </div>
-            <Button onClick={logout} variant="outline" className="gap-2">
-              <ArrowLeftIcon className="h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={addTokens} variant="default" className="gap-2 cursor-pointer">
+                {tokensAdded ?
+                  <>
+                    <Check className="h-4 w-4" />
+                    Tokens Added
+                  </>
+                  :
+                  <>
+                    <Plus className="h-4 w-4" />
+                    Add Tokens
+                  </>
+                }
+              </Button>
+              <Button onClick={logout} variant="outline" className="gap-2">
+                <ArrowLeftIcon className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-6 max-w-3xl">

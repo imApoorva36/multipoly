@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@huddle01/react": "^2.6.0",
     "@huddle01/server-sdk": "^2.6.2",
     "@privy-io/react-auth": "^3.0.1",

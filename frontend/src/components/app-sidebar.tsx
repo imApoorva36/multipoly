@@ -7,8 +7,16 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar"
 import { Button } from "./ui/button"
+import ChatSection from "./sidebar/chat"
+import PlayersSection from "./sidebar/players"
+import PlaySection from "./sidebar/play"
+import { WalletClient } from "viem"
 
 const items = [
+  {
+    title: "Play",
+    color: "bg-mpurple"
+  },
   {
     title: "Chat",
     color: "bg-mred"
@@ -18,57 +26,11 @@ const items = [
     color: "bg-mgreen"
   },
   {
-    title: "NFTs",
-    color: "bg-mpurple"
-  },
-  {
     title: "ASI Help",
     color: "bg-myellow"
   }
 ]
 
-// Tab content components
-const ChatSection = () => (
-  <div className="p-4 space-y-4">
-    <h3 className="text-lg font-semibold">Game Chat</h3>
-    <div className="space-y-2">
-      <div className="p-2 bg-gray-100 rounded text-sm">
-        Player1: Ready to start the game!
-      </div>
-      <div className="p-2 bg-gray-100 rounded text-sm">
-        Player2: Let&apos;s go!
-      </div>
-    </div>
-    <div className="flex space-x-2">
-      <input 
-        type="text" 
-        placeholder="Type a message..." 
-        className="flex-1 p-2 border rounded"
-      />
-      <Button size="sm">Send</Button>
-    </div>
-  </div>
-)
-
-const PlayersSection = () => (
-  <div className="p-4 space-y-4">
-    <h3 className="text-lg font-semibold">Players</h3>
-    <div className="space-y-2">
-      <div className="flex items-center justify-between p-2 bg-green-50 rounded">
-        <span>Player 1</span>
-        <span className="text-green-600 text-sm">Online</span>
-      </div>
-      <div className="flex items-center justify-between p-2 bg-green-50 rounded">
-        <span>Player 2</span>
-        <span className="text-green-600 text-sm">Online</span>
-      </div>
-      <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-        <span>Player 3</span>
-        <span className="text-gray-500 text-sm">Offline</span>
-      </div>
-    </div>
-  </div>
-)
 
 const NFTsSection = () => (
   <div className="p-4 space-y-4">
@@ -108,17 +70,17 @@ const ASIHelpSection = () => (
   </div>
 )
 
-export function AppSidebar() {
+export function AppSidebar({ walletClient } : { walletClient: WalletClient | null}) {
   const [activeTab, setActiveTab] = useState("Chat")
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case "Play":
+        return <PlaySection walletClient = {walletClient}/>
       case "Chat":
         return <ChatSection />
       case "Players":
         return <PlayersSection />
-      case "NFTs":
-        return <NFTsSection />
       case "ASI Help":
         return <ASIHelpSection />
       default:
