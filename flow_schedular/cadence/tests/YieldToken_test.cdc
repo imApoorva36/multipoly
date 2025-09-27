@@ -4,8 +4,8 @@ access(all) let account = Test.createAccount()
 
 access(all) fun testContract() {
     let err = Test.deployContract(
-        name: "Counter",
-        path: "../contracts/Counter.cdc",
+        name: "YieldToken",
+        path: "../contracts/YieldToken.cdc",
         arguments: [],
     )
 
