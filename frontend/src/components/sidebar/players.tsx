@@ -5,8 +5,9 @@ import { useParams } from "next/navigation"
 import { Badge } from "../ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { UserIcon } from "@heroicons/react/16/solid"
-import Image from "next/image"
+import { useWallets } from "@privy-io/react-auth"
 import { getPfp } from "@/lib/utils"
+import Image from "next/image"
 
 // Component for a single peer card
 function LocalPeerCard() {

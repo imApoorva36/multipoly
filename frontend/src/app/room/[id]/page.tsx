@@ -12,10 +12,29 @@ import { RoomHeader } from "@/components/room/RoomHeader";
 import { ChatPanel } from "@/components/room/ChatPanel";
 import { PlayersList } from "@/components/room/PlayersList";
 import { AuthenticationScreen } from "@/components/room/AuthenticationScreen";
+import { useViem } from "@/providers/ViemProvider"
+
+import MultipolyAbi from "@/abi/Multipoly.json"
+import { testnet } from "@/providers/WalletProvider"
+import { Hex } from "viem"
+import { string_to_num } from "@/lib/utils"
 
 export interface Metadata {
   name: string
   image: string
+}
+
+interface PlayerPos {
+  user_account: string;
+  game_id: number;
+  position: number
+}
+
+interface PlayerProperty {
+  nft_id: number
+  stake_amount: number,
+  address: string,
+  exists: boolean
 }
 
 function getRoomIdParam(param: string | string[] | undefined): string | null {
@@ -55,6 +74,44 @@ export default function RoomPage() {
     tokenError,
     sendData
   } = useHuddleRoom(roomId);
+
+  let { walletClient, publicClient } = useViem()
+
+  useEffect(() => {
+    
+    async function getGameState () {
+      if (!publicClient || !wallet) return;
+
+      console.log([string_to_num(roomId || ""), wallet.address as Hex])
+      
+      let data = await publicClient.readContract({
+        address: process.env.NEXT_PUBLIC_MULTIPOLY as Hex,
+        abi: MultipolyAbi,
+        functionName: "getGameState",
+        args: [string_to_num(roomId || ""), wallet.address]
+      }) as [PlayerPos[], PlayerProperty[]]
+
+      let [ positions, properties ] = data
+      if (positions.length == 0 || !positions.find(p => p.user_account.toLowerCase() === (wallet.address || "").toLowerCase())) {
+        if (!walletClient) return
+        
+        console.log(string_to_num(roomId || ""), wallet.address as Hex)
+        let tx = await walletClient.writeContract({
+          chain: testnet,
+          account: wallet.address as Hex,
+          address: process.env.NEXT_PUBLIC_MULTIPOLY as Hex,
+          abi: MultipolyAbi,
+          functionName: "mintAllTokens",
+          args: [wallet.address as Hex, process.env.NEXT_PUBLIC_AMETHYST as Hex, process.env.NEXT_PUBLIC_EMRALD as Hex, process.env.NEXT_PUBLIC_GOLDEN as Hex, process.env.NEXT_PUBLIC_RUBY as Hex],
+          gasPrice: BigInt(200_000_000_000),
+        })
+        console.log(tx)
+      }
+    }
+
+    getGameState()
+    
+  }, [ walletClient])
 
   // Auto-join room and set metadata
   useEffect(() => {

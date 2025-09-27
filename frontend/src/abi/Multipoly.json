@@ -1,0 +1,1092 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "initialOwner",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_property_nft",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnableInvalidOwner",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "OwnableUnauthorizedAccount",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "GameCreated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "PlayerJoinedGame",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "PlayerLeftGame",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "position",
+                "type": "uint256"
+            }
+        ],
+        "name": "PlayerPositionUpdated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "nft_id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "stake_amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            }
+        ],
+        "name": "PlayerPropertiesSet",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "PlayerTurnSet",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "PROPERTY_NFT",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address[]",
+                "name": "user_accounts",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "positions",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "batchSetPlayerPositions",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "player_address",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_1",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_2",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_3",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_4",
+                "type": "address"
+            }
+        ],
+        "name": "burnAllTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "player_address",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "credit",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "player_address",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "debit",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "deletePlayerPosition",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "nft_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "deletePlayerProperty",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "gamePlayersList",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "getAllPlayerPositionsInGame",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "user_account",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "game_id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "position",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct Multipoly.PlayerPos[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "getAllPlayerProperties",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "nft_id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "stake_amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "exists",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct Multipoly.PlayerProperties[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "getGamePlayers",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "getGameState",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "user_account",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "game_id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "position",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct Multipoly.PlayerPos[]",
+                "name": "",
+                "type": "tuple[]"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "nft_id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "stake_amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "exists",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct Multipoly.PlayerProperties[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "getPlayerCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "getPlayerPosition",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "user_account",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "game_id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "position",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct Multipoly.PlayerPos",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "nft_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "getPlayerProperty",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "nft_id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "stake_amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "exists",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct Multipoly.PlayerProperties",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "getPlayerTurn",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "token_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "getPropertyDetails",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "owner",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "position",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "tokenAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "purchaseValue",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "rentAmount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct IPropertyNFT.Property",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "getUserGames",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "isPlayerInGame",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "isPlayerInGameView",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "player_address",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_1",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_2",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_3",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_4",
+                "type": "address"
+            }
+        ],
+        "name": "mintAllTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "steps",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "purchase",
+                "type": "bool"
+            },
+            {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "purchase_value",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "next_player",
+                "type": "address"
+            }
+        ],
+        "name": "move",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            }
+        ],
+        "name": "onboardPlayer",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "playerPositions",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "position",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "playerProperties",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "nft_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "stake_amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            },
+            {
+                "internalType": "bool",
+                "name": "exists",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "playerTurns",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user_account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "nft_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "new_stake_amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "new_token_address",
+                "type": "address"
+            }
+        ],
+        "name": "updatePlayerStakeAmount",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "game_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "new_user_account",
+                "type": "address"
+            }
+        ],
+        "name": "updatePlayerTurn",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "userGames",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

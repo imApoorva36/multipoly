@@ -1,10 +1,9 @@
+
 import { tokenSymbols } from "@/lib/utils"
 import { useViem } from "@/providers/ViemProvider"
 import { useEffect, useState } from "react"
-
 import TokenAbi from "@/abi/Token.json"
 import DiceRollAbi from "@/abi/DiceRoll.json"
-
 import { useWallets } from "@privy-io/react-auth"
 import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
@@ -14,6 +13,7 @@ import { useParams } from "next/navigation"
 import { useHuddleRoom } from "@/hooks/useHuddleRoom"
 import { useDataMessage, useLocalPeer } from "@huddle01/react/hooks"
 import { MULTIPOLY_PROPERTIES } from "@/utils/multipoly"
+import SwapModal from "./SwapModal"
 
 // Define the type for metadata
 export interface Metadata {
@@ -62,9 +62,11 @@ function DiceDisplay({ value }: { value: number }) {
 }
 
 export default function PlaySection () {
+
     const [ balances, setBalances ] = useState<number[]>([0, 0, 0, 0])
     const { publicClient } = useViem()
     const [ roll, setRoll ] = useState<number|null>(null)
+    const [swapOpen, setSwapOpen] = useState(false)
     const [ isRolling, setIsRolling ] = useState(false)
     const [ turnNotification, setTurnNotification ] = useState<string|null>(null)
     const params = useParams<{ id: string }>()
@@ -129,59 +131,41 @@ export default function PlaySection () {
 
             setBalances(datas.map(d => Number(d)))
         }
-        
         getBalances()
     }, [publicClient, wallet])
 
-    // Colors for each token type
-    const tokenColors = [
-        "bg-mpurple/10 border-mpurple text-mpurple", // Amethyst
-        "bg-mgreen/10 border-mgreen text-mgreen", // Emerald
-        "bg-myellow/10 border-myellow text-myellow", // Golden
-        "bg-mred/10 border-mred text-mred", // Ruby
-    ]
+    function handleSwap(from: number, to: number, amount: number) {
+        if (from === to || amount <= 0) return;
+        // For demo: just update balances locally, since tokens are equal in value
+        setBalances(prev => {
+            if (prev[from] < amount) return prev;
+            const next = [...prev];
+            next[from] -= amount;
+            next[to] += amount;
+            return next;
+        });
+    }
 
     return (
-        <div className="h-[90vh] flex flex-col relative">
-            {/* Turn notification overlay */}
-            {turnNotification && (
-                <div className="absolute top-0 left-0 w-full py-2 bg-black bg-opacity-80 text-white text-center font-bold z-50"
-                     style={{
-                         animation: 'fadeInOut 3s ease-in-out',
-                     }}>
-                    <style jsx>{`
-                        @keyframes fadeInOut {
-                            0% { opacity: 0; transform: translateY(-20px); }
-                            15% { opacity: 1; transform: translateY(0); }
-                            85% { opacity: 1; transform: translateY(0); }
-                            100% { opacity: 0; transform: translateY(-20px); }
-                        }
-                    `}</style>
-                    {turnNotification}
-                </div>
-            )}
-            <hr className="border-black border-1 m-3"/>
-            
-            <div className="flex-1 flex flex-col space-y-6 p-4 pt-0 h-full">
-                {/* Balances Section */}
-                <div className="border-1 border-black rounded-none bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                        <CurrencyDollarIcon className="h-5 w-5 text-slate-700" />
-                        <h3 className="text-sm font-bold text-slate-800">My Balances</h3>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-3">
-                        {balances.map((balance, i) => (
-                            <Badge 
-                                key={i}
-                                variant="outline" 
-                                className={`rounded-none border-2 p-1 text-sm font-bold ${tokenColors[i]}`}
-                            >
-                                {balance} {tokenSymbols[i]}
-                                <CoinsIcon className={`inline-block h-4 w-4 ml-2 text-current ${tokenColors[i].split(' ')[2]}`} />
-                            </Badge>
+        <div className="p-4 space-y-4">
+            <h3 className="text-lg font-semibold">Play</h3>
+            <div className="flex flex-col">
+                <div>
+                    <h4 className="text-base font-semibold">Balances</h4>
+                    <div className="grid grid-cols-2">
+                        {balances.map((b,i) => (
+                            <span key={i}>{b} {tokenSymbols[i]}</span>
                         ))}
                     </div>
+                    <Button className="mt-2 w-full" variant="outline" onClick={() => setSwapOpen(true)}>
+                        Swap Tokens
+                    </Button>
+                    <SwapModal
+                        open={swapOpen}
+                        onClose={() => setSwapOpen(false)}
+                        tokens={tokenSymbols}
+                        onSwap={handleSwap}
+                    />
                 </div>
 
                 {/* Dice Roll Section */}

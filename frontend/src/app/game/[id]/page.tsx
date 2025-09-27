@@ -6,17 +6,13 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import Image from "next/image";
 import { ArrowLeftCircle, BadgeQuestionMark, CoinsIcon, Globe2 } from "lucide-react";
-import { useWallets } from "@privy-io/react-auth"
+import { EIP1193Provider, useWallets } from "@privy-io/react-auth"
+import { createWalletClient, custom, Hex, WalletClient } from "viem"
+import { testnet } from "@/providers/WalletProvider"
 import { useHuddleRoom } from "@/hooks/useHuddleRoom"
 import { useParams } from "next/navigation"
-import { useDataMessage, useLocalPeer, useRemotePeer } from "@huddle01/react/hooks"
+import { useLocalPeer, useRemotePeer } from "@huddle01/react"
 import { FireIcon } from "@heroicons/react/16/solid";
-import PlayerPeg from "@/components/game/PlayerPeg";
-
-// Define the type for metadata
-export interface Metadata {
-  name: string;
-}
 
 export default function MonopolyBoard() {
     const [mounted, setMounted] = useState(false);
@@ -26,32 +22,52 @@ export default function MonopolyBoard() {
     const [scale, setScale] = useState(1);
 
     const { wallets } = useWallets()
+    const wallet = wallets[0]
 
     const params = useParams()
     const roomId = typeof params?.id === "string" ? params.id : null
-    
+
     const {
         state,
-        peerIds
+        messages,
+        peerIds,
+        leaveRoom,
+        joinRoom,
+        isJoiningRoom,
+        joinError,
+        sendMessage,
+        isSendingMessage,
+        isFetchingToken,
+        tokenError,
+        sendData
     } = useHuddleRoom(roomId);
 
-    const { peerId: myId } = useLocalPeer<Metadata>()
+    let { updateMetadata, metadata, peerId: myId } = useLocalPeer<{name: string, image: string}>()
 
-    // Initialize with empty array, we'll add peers once they're available
-    const [ participants, setParticipants ] = useState<string[]>([])
+    const [ participants, setParticipants ] = useState<string[]>([myId as string])
 
-    // Handle player positions and data sync
-    useDataMessage({
-        onMessage: (payload, from, label) => {
-            if (label === 'game-state' || label === 'player-move' || label === 'turn-advance') {
-                // This is handled in the play component
-                // Just rerendering due to state updates from the game store
-                
-                // We can add additional visual feedback for state changes here if needed
-                // e.g., animations or notifications when turns change
-            }
+    useEffect(() => {
+        if (!roomId) {
+            return;
         }
-    });
+    
+        if (state === "connected") {
+            if (metadata?.name) return
+            updateMetadata({
+                name: wallet.address.slice(0, 6) + "..." + wallet.address.slice(-4),
+                image: "https://api.dicebear.com/9.x/identicon/svg?seed=" + wallet.address
+            })
+            return
+        }
+    
+        if (isFetchingToken || isJoiningRoom) {
+            return;
+        }
+    
+        joinRoom().catch((error) => {
+            console.error("Failed to join room", error);
+        });
+        }, [roomId, state, isJoiningRoom, isFetchingToken, joinRoom]);
 
     useEffect(() => {
         setMounted(true);
@@ -78,46 +94,18 @@ export default function MonopolyBoard() {
     }, []);
 
 
-    // First effect to add local peer when it becomes available
-    useEffect(() => {
-        if (myId) {
-            setParticipants(current => {
-                if (!current.includes(myId)) {
-                    return [...current, myId];
-                }
-                return current;
-            });
-        }
-    }, [myId]);
-
-    // Second effect to add remote peers when connection state changes
     useEffect(() => {
         if (state !== 'connected') return
 
-        // Use a functional state update to avoid dependency on participants
-        setParticipants(currentParticipants => {
-            const newParticipants = [...currentParticipants]
-            let hasChanged = false
-            
-            // Make sure local peer is included
-            if (myId && !newParticipants.includes(myId)) {
-                newParticipants.push(myId)
-                hasChanged = true
+        let newParticipants = [...participants]
+        for (let id of peerIds) {
+            if (!newParticipants.includes(id)) {
+                newParticipants.push(id)
             }
-            
-            // Add all remote peers
-            for (const id of peerIds) {
-                if (!newParticipants.includes(id)) {
-                    newParticipants.push(id)
-                    hasChanged = true
-                }
-            }
-            
-            // Only return a new array if we actually added participants
-            return hasChanged ? newParticipants : currentParticipants
-        })
+        }
+        setParticipants(newParticipants)
 
-    }, [state, peerIds, myId]) // Include myId in dependencies
+    }, [state, peerIds])
 
 
     const renderProperty = (property: Property, index: number) => {
@@ -182,7 +170,7 @@ export default function MonopolyBoard() {
         <SidebarProvider>
             <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex flex-row">
                 {/* Sidebar on the left */}
-                <AppSidebar participants={participants} />
+                <AppSidebar participants={participants} sendMessage={sendMessage} messages={messages} state={state} isSendingMessage={isSendingMessage} />
                 {/* Main content */}
                 <main className="flex-1 bg-[url('/delhi-bg.png')] flex flex-col items-center justify-center p-6 relative">
                     <div className="relative" style={{ perspective: "1200px" }}>

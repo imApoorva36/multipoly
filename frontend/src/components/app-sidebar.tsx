@@ -10,7 +10,9 @@ import { Button } from "./ui/button"
 import ChatSection from "./sidebar/chat"
 import PlayersSection from "./sidebar/players"
 import PlaySection from "./sidebar/play"
+import ASIHelpSection from "./sidebar/ASIHelpSection"
 import { WalletClient } from "viem"
+import { ChatMessage } from "@/hooks/useHuddleRoom"
 
 const items = [
   {
@@ -50,27 +52,9 @@ const NFTsSection = () => (
   </div>
 )
 
-const ASIHelpSection = () => (
-  <div className="p-4 space-y-4">
-    <h3 className="text-lg font-semibold">ASI Help</h3>
-    <div className="space-y-3">
-      <div className="p-3 bg-blue-50 rounded">
-        <div className="font-medium text-blue-800">Game Rules</div>
-        <div className="text-sm text-blue-600">Learn how to play Multipoly</div>
-      </div>
-      <div className="p-3 bg-purple-50 rounded">
-        <div className="font-medium text-purple-800">Strategy Tips</div>
-        <div className="text-sm text-purple-600">AI-powered suggestions</div>
-      </div>
-      <div className="p-3 bg-green-50 rounded">
-        <div className="font-medium text-green-800">Market Analysis</div>
-        <div className="text-sm text-green-600">Property value insights</div>
-      </div>
-    </div>
-  </div>
-)
+// ...removed static ASIHelpSection...
 
-export function AppSidebar({ participants } : { participants: string[] }) {
+export function AppSidebar({ participants, sendMessage, messages, state, isSendingMessage } : { participants: string[], sendMessage: (msg: string) => Promise<void>, messages: ChatMessage[], state: string, isSendingMessage: boolean }) {
   const [activeTab, setActiveTab] = useState("Chat")
 
   const renderTabContent = () => {
@@ -78,13 +62,14 @@ export function AppSidebar({ participants } : { participants: string[] }) {
       case "Play":
         return <PlaySection />
       case "Chat":
-        return <ChatSection />
+        return <ChatSection sendMessage={sendMessage} messages={messages} state={state} isSendingMessage={isSendingMessage} />
       case "Players":
         return <PlayersSection participants={participants} />
       case "ASI Help":
-        return <ASIHelpSection />
+        // For now, pass a stub getGameState. You can wire up real state as needed.
+        return <ASIHelpSection getGameState={() => ({})} />
       default:
-        return <ChatSection />
+        return <ChatSection sendMessage={sendMessage} messages={messages} state={state} isSendingMessage={isSendingMessage} />
     }
   }
 
