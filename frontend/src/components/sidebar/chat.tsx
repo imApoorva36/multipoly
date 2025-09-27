@@ -197,7 +197,7 @@ export default function ChatSection () {
                     }
                   }}
                   disabled={state !== "connected"}
-                  className="flex-1 border-2 border-black rounded-none bg-white/80 focus:bg-white focus:border-mred transition-all duration-300 text-base"
+                  className="flex-1 border-2 border-black rounded-none bg-white/80 focus:bg-white focus:border-mgreen transition-all duration-300 text-base"
                 />
                 <Button
                   onClick={handleSendMessage}

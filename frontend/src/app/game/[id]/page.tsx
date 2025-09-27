@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MONOPOLY_PROPERTIES, getPropertyPosition, getAccentPositionClasses, isRailroadProperty, type MonopolyProperty } from "@/utils/monopoly";
+import { MULTIPOLY_PROPERTIES, getPropertyPosition, getAccentPositionClasses, type Property } from "@/utils/multipoly";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import Image from "next/image";
-import { BadgeQuestionMark, Globe2 } from "lucide-react";
+import { ArrowLeftCircle, BadgeQuestionMark, CoinsIcon, Globe2 } from "lucide-react";
 import { EIP1193Provider, useWallets } from "@privy-io/react-auth"
 import { createWalletClient, custom, Hex, WalletClient } from "viem"
 import { testnet } from "@/providers/WalletProvider"
 import { useHuddleRoom } from "@/hooks/useHuddleRoom"
 import { useParams } from "next/navigation"
 import { useLocalPeer, useRemotePeer } from "@huddle01/react"
+import { FireIcon } from "@heroicons/react/16/solid";
 
 export default function MonopolyBoard() {
     const [mounted, setMounted] = useState(false);
@@ -84,11 +85,9 @@ export default function MonopolyBoard() {
     }, [state, peerIds])
 
 
-    const renderProperty = (property: MonopolyProperty, index: number) => {
+    const renderProperty = (property: Property, index: number) => {
         const { style, orientation, isCorner } = getPropertyPosition(index, property);
         const isSpecial = Boolean(property.special);
-        const isUtility = Boolean(property.utility);
-        const isRailroad = isRailroadProperty(property);
         const textSizeClass = isCorner ? "text-xs" : "text-[7px]";
         const nameTextSizeClass = property.name.length > 12 ? "text-[6px]" : isCorner ? "text-[9px]" : "text-[7px]";
         const accentPositionClass = orientation ? getAccentPositionClasses(orientation) : "";
@@ -106,32 +105,34 @@ export default function MonopolyBoard() {
                 `}
                 style={style}
             >
-                {!isCorner && !isSpecial && !isUtility && !isRailroad && orientation && (
+                {!isCorner && !isSpecial && orientation && (
                     <div
                         className={`absolute rounded-none ${accentPositionClass} ${property.color}`}
                     />
                 )}
-                {isRailroad && orientation && (
-                    <div
-                        className={`absolute text-white text-[6px] flex items-center justify-center rounded-sm ${accentPositionClass}`}
-                        style={{
-                            backgroundColor: property.color,
-                            boxShadow: "inset 0 1px 2px rgba(0,0,0,0.2)",
-                        }}
-                    >
-                        🚂
+                {isSpecial && (
+                    <div className={`flex items-center justify-center`}>
+                        {property.name === "CHANCE" ? (
+                            <BadgeQuestionMark className="text-mred w-6 h-6" />
+                        ) : property.name === "DAO" ? (
+                            <Globe2 className="text-mblue w-6 h-6" />
+                        ) : null}
                     </div>
                 )}
-                {isUtility && orientation && (
-                    <div
-                        className={`absolute bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 text-[8px] flex items-center justify-center rounded-sm shadow-inner ${accentPositionClass}`}
-                    >
-                        ⚡
+                {isCorner && (
+                    <div className={`inset-0 flex items-center justify-center`}>
+                        {property.name === "BURN" ? (
+                            <FireIcon className="text-mblue w-10 h-10" />
+                        ) : property.name === "START" ? (
+                            <ArrowLeftCircle className="text-mblue w-10 h-10" />
+                        ) : property.name === "FREE MINT" ? (
+                            <CoinsIcon className="text-mblue w-10 h-10" />
+                        ) : null}
                     </div>
-                )}
+                )}  
                 <div
                     className={`
-                        p-1 leading-tight text-slate-700
+                        p-1  text-black
                         ${nameTextSizeClass}
                         ${!isCorner && !isSpecial ? "mt-3" : ""}
                     `}
@@ -176,13 +177,14 @@ export default function MonopolyBoard() {
                                 </div>
                             </div>
                             {/* Generate all properties */}
-                            {MONOPOLY_PROPERTIES.map((property, index) => renderProperty(property, index))}
+                            {MULTIPOLY_PROPERTIES.map((property, index) => renderProperty(property, index))}
                         </div>
                     </div>
                     
                     {/* Subtle rotation stats and controls at bottom right */}
                     <div className="fixed bottom-1 right-1 bg-white/60 border border-black backdrop-blur-sm rounded-none shadow-lg p-4 text-xs text-slate-600 max-w-xs">
                         <div className="grid grid-cols-1 gap-2 mb-3 text-xs">
+                            <Image src="/logo.png" alt="Dice" width={30} height={30} className="mx-auto w-12 h-12" />
                             <div className="flex items-center gap-1.5">
                                 <div className="w-1 h-1 bg-black rounded-full"></div>
                                 <span>Z: {Math.round(rotationZ)}°</span>
@@ -220,7 +222,7 @@ export default function MonopolyBoard() {
                                 }}
                                 className="px-2 py-1 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 rounded text-[10px] font-medium transition-colors flex-1"
                             >
-                                Flat
+                                2D View
                             </button>
                         </div>
                         <div className="text-[9px] text-slate-500 space-y-0.5">
