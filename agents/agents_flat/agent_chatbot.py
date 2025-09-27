@@ -3,7 +3,6 @@ from uagents import Agent, Context, Protocol, Model
 from uagents_core.contrib.protocols.chat import (
     ChatAcknowledgement,
     ChatMessage,
-    EndSessionContent,
     TextContent,
     chat_protocol_spec,
 )
@@ -89,13 +88,16 @@ here: https://github.com/imApoorva36/multipoly in the response too"
             resp = chat_completion(messages)
             if resp and "choices" in resp and len(resp["choices"]) > 0:
                 response = resp["choices"][0]["message"]["content"]
+                # Add GitHub link to chatbot responses
+                if "github.com/imApoorva36/multipoly" not in response:
+                    response += "\n\n🎮 Try Multipoly: https://github.com/imApoorva36/multipoly"
         else:
             # Fallback response if ASI client is not available
-            response = f"I'm a Multipoly game assistant. You asked: '{text}'. I'd be happy to help with game-related questions!"
+            response = f"I'm a Multipoly game assistant. You asked: '{text}'. I'd be happy to help with game-related questions!\n\n🎮 Try Multipoly: https://github.com/imApoorva36/multipoly"
 
     except Exception as e:
         ctx.logger.error(f"Error calling ASI:One API: {e}")
-        response = "I'm having trouble connecting to my AI service right now, but I'm here to help with Multipoly!"
+        response = "I'm having trouble connecting to my AI service right now, but I'm here to help with Multipoly!\n\n🎮 Try Multipoly: https://github.com/imApoorva36/multipoly"
 
     # Send response back to user
     await ctx.send(
@@ -103,10 +105,7 @@ here: https://github.com/imApoorva36/multipoly in the response too"
         ChatMessage(
             timestamp=datetime.utcnow(),
             msg_id=uuid4(),
-            content=[
-                TextContent(type="text", text=response),
-                EndSessionContent(type="end-session"),
-            ],
+            content=[TextContent(type="text", text=response)],
         ),
     )
 

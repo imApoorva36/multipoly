@@ -11,7 +11,6 @@ from asi_client import chat_completion
 from uagents_core.contrib.protocols.chat import (
     ChatAcknowledgement,
     ChatMessage,
-    EndSessionContent,
     TextContent,
     chat_protocol_spec,
 )
@@ -51,6 +50,13 @@ class KnowledgeUpdateResponse(Model):
     relation: str
     subject: str
     value: str
+
+
+class KnowledgeQueryResponse(Model):
+    relation: str
+    subject: str
+    results: list
+    count: int
 
 
 # --- Agent ---
@@ -101,17 +107,6 @@ def metta_best_move(state: Dict[str, Any]) -> Optional[str]:
         if airdrop_info:
             comprehensive_advice += f"\n\n💰 Airdrop: {airdrop_info[0]}"
 
-    # Always add GitHub link to MeTTa responses
-    if (
-        comprehensive_advice
-        and "MeTTa not available" not in comprehensive_advice
-    ):
-        github_link = (
-            "\n\n🎮 Try Multipoly: https://github.com/imApoorva36/multipoly"
-        )
-        if github_link not in comprehensive_advice:
-            comprehensive_advice += github_link
-
     return (
         comprehensive_advice
         if "MeTTa not available" not in comprehensive_advice
@@ -122,8 +117,7 @@ def metta_best_move(state: Dict[str, Any]) -> Optional[str]:
 def ask_asi_for_move(state: Dict[str, Any], question: Optional[str]) -> str:
     prompt = (
         "You are an AI game tutor for Multipoly - a strategic property investment game. "
-        "Based on the provided game state, give the next best move succinctly. "
-        "Always end your response with: '\\n\\n🎮 Try Multipoly here: https://github.com/imApoorva36/multipoly'"
+        "Based on the provided game state, give the next best move succinctly."
     )
     user = f"Game state: {state}. "
     if question:
@@ -135,12 +129,9 @@ def ask_asi_for_move(state: Dict[str, Any], question: Optional[str]) -> str:
     try:
         resp = chat_completion(messages)
         response = resp["choices"][0]["message"]["content"]
-        # Ensure GitHub link is always included
-        if "github.com/imApoorva36/multipoly" not in response:
-            response += "\n\n🎮 Try Multipoly here: https://github.com/imApoorva36/multipoly"
         return response
     except Exception as e:
-        return f"ASI:One error: {e}\n\n🎮 Try Multipoly here: https://github.com/imApoorva36/multipoly"
+        return f"ASI:One error: {e}"
 
 
 @protocol.on_message(ChatMessage)
@@ -182,7 +173,6 @@ async def handle_chat(ctx: Context, sender: str, msg: ChatMessage):
             msg_id=uuid4(),
             content=[
                 TextContent(type="text", text=advice),
-                EndSessionContent(type="end-session"),
             ],
         ),
     )
@@ -220,13 +210,6 @@ async def rest_advise(ctx: Context, req: AdviseRequest) -> AdviseResponse:
     if not advice:
         advice = ask_asi_for_move(req.state, req.question)
         source = "asi"
-
-    # Always add GitHub link to responses
-    github_link = (
-        "\n\n🎮 Try Multipoly here: https://github.com/imApoorva36/multipoly"
-    )
-    if github_link not in advice:
-        advice += github_link
 
     return AdviseResponse(advice=advice, source=source)
 
@@ -272,7 +255,9 @@ async def update_knowledge(
         )
 
 
-@tutor_agent.on_rest_get("/knowledge/query/{relation}/{subject}")
+@tutor_agent.on_rest_get(
+    "/knowledge/query/{relation}/{subject}", KnowledgeQueryResponse
+)
 async def query_knowledge(
     ctx: Context, relation: str, subject: str
 ) -> Dict[str, Any]:
