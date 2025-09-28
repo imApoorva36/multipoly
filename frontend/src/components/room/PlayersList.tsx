@@ -126,7 +126,7 @@ export function PlayersList({ peerIds, localPeerMetadata, startGame, onboarded }
                 <UserIcon className="h-8 w-8 text-slate-400" />
               </div>
               <p className="text-lg font-semibold text-slate-600 mb-1">Waiting for players</p>
-              <p className="text-sm text-slate-500">Other players will appear here when they join</p>
+              <p className="text-sm text-slate-500">You need atleast 2 players to start a game</p>
             </div>
           )}
         </div>
