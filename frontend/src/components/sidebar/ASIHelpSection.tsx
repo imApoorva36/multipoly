@@ -33,15 +33,12 @@ export default function ASIHelpSection({ getGameState }: ASIHelpSectionProps) {
   function getExampleGameState () {
     return {
         "state": {
-            "landed_at": { name: "Red Fort", color: "Red", price: 200 },
-            "balances": { "Amethyst": 3, "Emerald": 1, "Golden": 0, "Ruby": 250 },
+            "landed_at": { name: "Khan Market", color: "Purple", price: 10 },
+            "balances": { "Amethyst": 100, "Emerald": 100, "Golden": 100, "Ruby": 100 },
             holdings: [
-                { name: "Taj Mahal", color: "Blue", price: 300 },
-                { name: "Canaught Place", color: "Green", price: 220 },
-                { name: "Qutub Minar", color: "Yellow", price: 180 },
             ]
         },
-        question: "What should be my next moove?"
+        question: "What should be I have done on my last turn?"
     }
   }
 
@@ -65,13 +62,15 @@ export default function ASIHelpSection({ getGameState }: ASIHelpSectionProps) {
   }
 
   return (
-    <div className="p-4 border rounded bg-muted/30 mt-4">
-        <div className="flex items-center gap-3 mb-4">
+    <div className="rounded bg-muted/30 mt-4">
+        <hr className="border-black border" />
+        <div className="flex items-center gap-3 my-4">
             <div className="w-10 h-10 border-2 border-myellow bg-gradient-to-br from-myellow/20 to-myellow/30 rounded-none flex items-center justify-center">
                 <BotMessageSquare className="h-5 w-5 text-mred" />
             </div>
             <div>
-                <h2 className="text-2xl text-slate-800 font-bold">ASI Help</h2>
+                <h2 className="text-2xl text-slate-800 font-bold">Learn Web3</h2>
+                <p className="text-sm text-slate-600">Powered by Arificial Superintelligence Alliance</p>
             </div>
         </div>
         <div className="mb-4 space-y-2 pb-7 border-b-2 border-dashed border-black">

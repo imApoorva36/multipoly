@@ -1,51 +1,65 @@
-import { ChatMessage, useHuddleRoom } from "@/hooks/useHuddleRoom"
+import { ChatMessage } from "@/hooks/useHuddleRoom"
 import { Button } from "../ui/button"
-import { useParams } from "next/navigation"
 import { Metadata } from "@/app/room/[id]/page"
-import { useLocalPeer, useRemotePeer } from "@huddle01/react"
+import { useLocalPeer } from "@huddle01/react"
 import { Badge } from "../ui/badge"
 import { ChatBubbleLeftIcon } from "@heroicons/react/16/solid"
 import { Input } from "../ui/input"
-import { useEffect, useState } from "react"
-import { useWallets } from "@privy-io/react-auth"
+import { useState } from "react"
 
-
+type MessageMetadata = {
+  name: string;
+  image: string;
+}
 
 // Tab content components
-export default function ChatSection ({ sendMessage, messages, state, isSendingMessage } : { sendMessage: (msg: string) => Promise<void>, messages: ChatMessage[], state: string, isSendingMessage: boolean }) {
-
-    const params = useParams<{ id: string }>();
-    const roomId = params.id
-    
-    const { updateMetadata, metadata, peerId } = useLocalPeer<Metadata>()
+export default function ChatSection ({ 
+  sendMessage, 
+  messages, 
+  state, 
+  isSendingMessage,
+  isJoiningRoom,
+  isFetchingToken,
+  tokenError,
+  joinError,
+  peerId: externalPeerId 
+} : { 
+  sendMessage: (msg: string) => Promise<void>, 
+  messages: ChatMessage[], 
+  state: string, 
+  isSendingMessage: boolean,
+  isJoiningRoom?: boolean,
+  isFetchingToken?: boolean,
+  tokenError?: Error | null,
+  joinError?: Error | null,
+  peerId?: string | null 
+}) {
+    const { metadata, peerId: localPeerId } = useLocalPeer<Metadata>()
     const [newMessage, setNewMessage] = useState("");
-
-    const {wallets} = useWallets()
-    const wallet = wallets[0]
-
-      
-
-    function useResolveMetadata (peerId: string) {
-      let m: Metadata = {name: "", image: "https://api.dicebear.com/9.x/identicon/svg?seed=0"}
-      if (peerId) {
-        const remotePeer = useRemotePeer<Metadata>({peerId})
-        m = remotePeer.metadata || m
+    
+    // Use external peerId if provided, otherwise use the one from useLocalPeer
+    const peerId = externalPeerId || localPeerId
+    
+    // Get status message based on connection state
+    const getStatusMessage = () => {
+      if (isFetchingToken) return "Connecting to chat...";
+      if (isJoiningRoom) return "Joining room...";
+      if (state === "connected") return "Chat ready";
+      return "Reconnecting to chat...";
+    };
+    
+    // This fixes the hook rules violation by moving the logic outside of useResolveMetadata
+    const getMetadata = (id: string): MessageMetadata => {
+      const defaultMetadata: MessageMetadata = {name: "User", image: "https://api.dicebear.com/9.x/identicon/svg?seed=0"}
+      if (!id || id === peerId) {
+        return metadata || defaultMetadata
       }
-      else {
-        const localPeer = useLocalPeer<Metadata>()
-        m = localPeer.metadata || m
-      }
-
-      if (!m.name) {
-        m = {...m, name: "User"}
-      }
-
-      return m
+      return defaultMetadata
     }
 
     function MessageBubble ({ message }: { message: ChatMessage }) {
-      const metadata = useResolveMetadata(message.from == peerId ? "" : message.from)
       const isOwn = message.from === peerId;
+      const metadata = getMetadata(message.from);
       
       return (
         <div 
@@ -100,6 +114,7 @@ export default function ChatSection ({ sendMessage, messages, state, isSendingMe
                         </div>
                         <div>
                             <h2 className="text-2xl text-slate-800 font-bold">Game Chat</h2>
+                            <p className="text-sm text-slate-600 mt-1">{getStatusMessage()}</p>
                         </div>
                     </div>
                     
@@ -115,6 +130,13 @@ export default function ChatSection ({ sendMessage, messages, state, isSendingMe
                     </Badge>
                 </div>
                 
+                {(tokenError || joinError) && (
+                  <div className="bg-mred/20 border-2 border-mred rounded-none p-3 mt-2">
+                    <p className="text-sm text-mred font-bold">
+                      ❌ {(tokenError ?? joinError)?.message}
+                    </p>
+                  </div>
+                )}
             </div>
             
             <div className="flex-1 flex flex-col space-y-4 p-4 pt-0 h-full overflow-hidden">

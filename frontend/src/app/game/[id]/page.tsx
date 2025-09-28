@@ -9,7 +9,7 @@ import { ArrowLeftCircle, BadgeQuestionMark, CoinsIcon, Globe2 } from "lucide-re
 import { useWallets } from "@privy-io/react-auth"
 import { useHuddleRoom } from "@/hooks/useHuddleRoom"
 import { useParams } from "next/navigation"
-import { useDataMessage } from "@huddle01/react"
+import { useDataMessage, useLocalPeer } from "@huddle01/react"
 import { FireIcon } from "@heroicons/react/16/solid";
 import PlayerPeg from "@/components/game/PlayerPeg";
 
@@ -43,19 +43,19 @@ export default function MonopolyBoard() {
         messages,
         peerIds,
         // Commented out unused variables
-        // leaveRoom,
-        // joinRoom,
-        // isJoiningRoom,
-        // joinError,
+        leaveRoom,
+        joinRoom,
+        isJoiningRoom,
+        joinError,
         sendMessage,
         isSendingMessage,
-        // isFetchingToken,
-        // tokenError,
+        isFetchingToken,
+        tokenError,
         sendData
     } = useHuddleRoom(roomId);
 
-    // Retrieve local peer data if needed in the future
-    // const { peerId, metadata } = useLocalPeer<Metadata>()
+    // Retrieve local peer data
+    const { peerId, metadata } = useLocalPeer()
 
     // Initialize with empty array, we'll add peers once they're available
     const [ participants, setParticipants ] = useState<string[]>([])
@@ -193,6 +193,16 @@ export default function MonopolyBoard() {
         }
     });
 
+    // Effect to join room immediately on component mount
+    useEffect(() => {
+        if (roomId && joinRoom && state !== 'connected' && !isJoiningRoom && !isFetchingToken) {
+            console.log("Attempting to join room:", roomId);
+            joinRoom().catch((error: Error) => {
+                console.error("Failed to join room", error);
+            });
+        }
+    }, [roomId, joinRoom, state, isJoiningRoom, isFetchingToken]);
+
     useEffect(() => {
         setMounted(true);
         
@@ -221,15 +231,17 @@ export default function MonopolyBoard() {
     useEffect(() => {
         if (state !== 'connected') return
 
-        const newParticipants = [...participants]
-        for (const id of peerIds) {
-            if (!newParticipants.includes(id)) {
-                newParticipants.push(id)
-            }
+        // Create a new array from peerIds rather than modifying the existing participants array
+        // This prevents the infinite update loop
+        const newParticipants = [...peerIds].filter(id => id) // Filter out any null/undefined values
+        
+        // Only update if the arrays are actually different
+        if (JSON.stringify(newParticipants.sort()) !== JSON.stringify([...participants].sort())) {
+            setParticipants(newParticipants)
         }
-        setParticipants(newParticipants)
 
-    }, [state, peerIds, participants])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state, peerIds]) // Intentionally removed participants from dependencies to prevent infinite updates
     
     // Effect to broadcast game state when it changes
     useEffect(() => {
@@ -306,7 +318,18 @@ export default function MonopolyBoard() {
         <SidebarProvider>
             <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex flex-row">
                 {/* Sidebar on the left */}
-                <AppSidebar participants={participants} sendMessage={sendMessage} messages={messages} state={state} isSendingMessage={isSendingMessage} />
+                <AppSidebar 
+                  participants={participants} 
+                  sendMessage={sendMessage} 
+                  messages={messages} 
+                  state={state} 
+                  isSendingMessage={isSendingMessage}
+                  isJoiningRoom={isJoiningRoom}
+                  isFetchingToken={isFetchingToken}
+                  tokenError={tokenError}
+                  joinError={joinError}
+                  peerId={peerId} 
+                />
                 {/* Main content */}
                 <main className="flex-1 bg-[url('/delhi-bg.png')] flex flex-col items-center justify-center p-6 relative">
                     <div className="relative" style={{ perspective: "1200px" }}>

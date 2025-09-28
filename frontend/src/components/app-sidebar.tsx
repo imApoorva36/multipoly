@@ -11,7 +11,6 @@ import ChatSection from "./sidebar/chat"
 import PlayersSection from "./sidebar/players"
 import PlaySection from "./sidebar/play"
 import ASIHelpSection from "./sidebar/ASIHelpSection"
-import { WalletClient } from "viem"
 import { ChatMessage } from "@/hooks/useHuddleRoom"
 
 const items = [
@@ -28,7 +27,7 @@ const items = [
     color: "bg-mgreen"
   },
   {
-    title: "ASI Help",
+    title: "Learn",
     color: "bg-myellow"
   }
 ]
@@ -54,7 +53,29 @@ const NFTsSection = () => (
 
 // ...removed static ASIHelpSection...
 
-export function AppSidebar({ participants, sendMessage, messages, state, isSendingMessage } : { participants: string[], sendMessage: (msg: string) => Promise<void>, messages: ChatMessage[], state: string, isSendingMessage: boolean }) {
+export function AppSidebar({ 
+  participants, 
+  sendMessage, 
+  messages, 
+  state, 
+  isSendingMessage,
+  isJoiningRoom,
+  isFetchingToken,
+  tokenError,
+  joinError,
+  peerId 
+} : { 
+  participants: string[], 
+  sendMessage: (msg: string) => Promise<void>, 
+  messages: ChatMessage[], 
+  state: string, 
+  isSendingMessage: boolean,
+  isJoiningRoom?: boolean,
+  isFetchingToken?: boolean,
+  tokenError?: Error | null,
+  joinError?: Error | null,
+  peerId?: string | null
+}) {
   const [activeTab, setActiveTab] = useState("Chat")
 
   const renderTabContent = () => {
@@ -62,14 +83,33 @@ export function AppSidebar({ participants, sendMessage, messages, state, isSendi
       case "Play":
         return <PlaySection />
       case "Chat":
-        return <ChatSection sendMessage={sendMessage} messages={messages} state={state} isSendingMessage={isSendingMessage} />
+        return <ChatSection 
+          sendMessage={sendMessage} 
+          messages={messages} 
+          state={state} 
+          isSendingMessage={isSendingMessage}
+          isJoiningRoom={isJoiningRoom}
+          isFetchingToken={isFetchingToken}
+          tokenError={tokenError}
+          joinError={joinError}
+          peerId={peerId}
+        />
       case "Players":
         return <PlayersSection participants={participants} />
-      case "ASI Help":
-        // For now, pass a stub getGameState. You can wire up real state as needed.
+      case "Learn":
         return <ASIHelpSection getGameState={() => ({})} />
       default:
-        return <ChatSection sendMessage={sendMessage} messages={messages} state={state} isSendingMessage={isSendingMessage} />
+        return <ChatSection 
+          sendMessage={sendMessage} 
+          messages={messages} 
+          state={state} 
+          isSendingMessage={isSendingMessage}
+          isJoiningRoom={isJoiningRoom}
+          isFetchingToken={isFetchingToken}
+          tokenError={tokenError}
+          joinError={joinError}
+          peerId={peerId}
+        />
     }
   }
 
