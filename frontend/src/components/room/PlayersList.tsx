@@ -9,8 +9,8 @@ import { useWallets } from "@privy-io/react-auth";
 import { useState } from "react";
 import { createWalletClient, custom, Hex } from "viem";
 import { testnet } from "@/providers/WalletProvider";
-import { tokens } from "@/app/page";
 import { Check, Plus } from "lucide-react";
+import { tokens } from "@/app/room/[id]/page";
 
 interface Metadata {
   name: string;

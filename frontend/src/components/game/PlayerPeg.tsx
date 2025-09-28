@@ -13,8 +13,12 @@ export function getPlayerPositionStyle(position: number, playerNumber: number) {
   const offsetX = ((playerNumber - 1) % 2) * 15; // 0px or 15px
   const offsetY = Math.floor((playerNumber - 1) / 2) * 15; // 0px, 15px for players 3-4
 
+  // Handle board wrap-around - we have 40 positions (1-40)
+  // If position goes beyond 40, wrap back around to position 1
+  const normalizedPosition = ((position - 1) % 40) + 1;
+  
   // Adjust position - index is 1-based (START position is 1)
-  const boardPosition = position - 1; // Convert to 0-based index for calculation
+  const boardPosition = normalizedPosition - 1; // Convert to 0-based index for calculation
   const squareSize = 8; // Size of each square in percentage
   
   // Calculate position based on board quadrant
@@ -54,7 +58,6 @@ interface ExtendedPlayerPegProps extends PlayerPegProps {
 }
 
 const PlayerPeg: React.FC<ExtendedPlayerPegProps> = ({ 
-  playerId, 
   playerNumber, 
   position, 
   isCurrentPlayer,
@@ -71,10 +74,9 @@ const PlayerPeg: React.FC<ExtendedPlayerPegProps> = ({
   const colorClass = playerColors[(playerNumber - 1) % playerColors.length];
   
   // Get position style based on the player's current board position
-  const positionStyle = getPlayerPositionStyle(position, playerNumber);
-  
-  // Log position details for debugging (temporarily)
-  console.log(`Player ${playerNumber} at position ${position}:`, positionStyle);
+  // Make sure position is valid and within range
+  const validPosition = position > 0 ? position : 1;
+  const positionStyle = getPlayerPositionStyle(validPosition, playerNumber);
 
   // Create a distinct appearance for current turn vs current player
   const ringClass = isCurrentTurn 
@@ -89,10 +91,13 @@ const PlayerPeg: React.FC<ExtendedPlayerPegProps> = ({
   return (
     <div 
       className={`absolute w-5 h-5 rounded-full border-2 ${colorClass} shadow-md z-50 
-        flex items-center justify-center transition-all duration-200
+        flex items-center justify-center transition-all duration-500 ease-in-out
         ${ringClass} ${scaleClass}
       `}
-      style={positionStyle}
+      style={{
+        ...positionStyle,
+        transition: 'top 0.5s ease-in-out, left 0.5s ease-in-out, right 0.5s ease-in-out, bottom 0.5s ease-in-out'
+      }}
     >
       <span className="text-[10px] font-bold text-white">
         {playerNumber}

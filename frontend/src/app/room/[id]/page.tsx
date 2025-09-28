@@ -16,7 +16,7 @@ import { useViem } from "@/providers/ViemProvider"
 
 import MultipolyAbi from "@/abi/Multipoly.json"
 import { testnet } from "@/providers/WalletProvider"
-import { Hex } from "viem"
+import { Hex, WatchAssetParams } from "viem"
 import { string_to_num } from "@/lib/utils"
 
 export interface Metadata {
@@ -36,6 +36,41 @@ interface PlayerProperty {
   address: string,
   exists: boolean
 }
+
+export const tokens = [
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_AMETHYST,
+      decimals: 18,
+      symbol: 'AMTY',
+    },
+  },
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_EMRALD,
+      decimals: 18,
+      symbol: 'EMRD',
+    },
+  },
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_GOLDEN,
+      decimals: 18,
+      symbol: 'GLDN',
+    },
+  },
+  {
+    type: "ERC20",
+    options: {
+      address: process.env.NEXT_PUBLIC_RUBY,
+      decimals: 18,
+      symbol: 'RUBY',
+    },
+  },
+] as WatchAssetParams[]
 
 function getRoomIdParam(param: string | string[] | undefined): string | null {
   if (!param) return null;
@@ -76,7 +111,7 @@ export default function RoomPage() {
     sendData
   } = useHuddleRoom(roomId);
 
-  let { walletClient, publicClient } = useViem()
+  const { walletClient, publicClient } = useViem()
 
   useEffect(() => {
     
@@ -85,19 +120,19 @@ export default function RoomPage() {
 
       console.log([string_to_num(roomId || ""), wallet.address as Hex])
       
-      let data = await publicClient.readContract({
+      const data = await publicClient.readContract({
         address: process.env.NEXT_PUBLIC_MULTIPOLY as Hex,
         abi: MultipolyAbi,
         functionName: "getGameState",
         args: [string_to_num(roomId || ""), wallet.address]
       }) as [PlayerPos[], PlayerProperty[]]
 
-      let [ positions, properties ] = data
+      const [ positions, properties ] = data
       if (positions.length == 0 || !positions.find(p => p.user_account.toLowerCase() === (wallet.address || "").toLowerCase())) {
         if (!walletClient) return
         
         console.log(string_to_num(roomId || ""), wallet.address as Hex)
-        let tx = await walletClient.writeContract({
+        const tx = await walletClient.writeContract({
           chain: testnet,
           account: wallet.address as Hex,
           address: process.env.NEXT_PUBLIC_MULTIPOLY as Hex,

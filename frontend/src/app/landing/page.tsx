@@ -207,7 +207,31 @@ function Landing() {
                     </div>
                 </div>
             </div>
+            {/* Architecture Diagram Section */}
+            <div className="relative py-20 px-6 bg-slate-50">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold text-slate-800 mb-4">
+                            How Multipoly Works
+                        </h2>
+                        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                            A decentralized architecture that combines blockchain security with real-time gameplay
+                        </p>
+                    </div>
 
+                    <div className="grid grid-cols-1  items-center">
+                        <div className=" rounded-none p-4 bg-white/80">
+                            <Image
+                                src="/diagram.jpg"
+                                alt="Multipoly Architecture"
+                                width={800}
+                                height={500}
+                                className="w-full object-contain"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
             {/* CTA Section */}
             <div className="relative py-20 px-6">
                 <Image

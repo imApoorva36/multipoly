@@ -6,13 +6,24 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import Image from "next/image";
 import { ArrowLeftCircle, BadgeQuestionMark, CoinsIcon, Globe2 } from "lucide-react";
-import { EIP1193Provider, useWallets } from "@privy-io/react-auth"
-import { createWalletClient, custom, Hex, WalletClient } from "viem"
-import { testnet } from "@/providers/WalletProvider"
+import { useWallets } from "@privy-io/react-auth"
 import { useHuddleRoom } from "@/hooks/useHuddleRoom"
 import { useParams } from "next/navigation"
-import { useLocalPeer, useRemotePeer } from "@huddle01/react"
+import { useDataMessage } from "@huddle01/react"
 import { FireIcon } from "@heroicons/react/16/solid";
+import PlayerPeg from "@/components/game/PlayerPeg";
+
+// Define game state interface
+interface GameState {
+  currentTurn: string;
+  players: Array<{
+    peerId: string;
+    walletAddress: string;
+    position: number;
+    playerNumber: number;
+  }>;
+  turnOrder: string[];
+}
 
 export default function MonopolyBoard() {
     const [mounted, setMounted] = useState(false);
@@ -31,43 +42,156 @@ export default function MonopolyBoard() {
         state,
         messages,
         peerIds,
-        leaveRoom,
-        joinRoom,
-        isJoiningRoom,
-        joinError,
+        // Commented out unused variables
+        // leaveRoom,
+        // joinRoom,
+        // isJoiningRoom,
+        // joinError,
         sendMessage,
         isSendingMessage,
-        isFetchingToken,
-        tokenError,
+        // isFetchingToken,
+        // tokenError,
         sendData
     } = useHuddleRoom(roomId);
 
-    let { updateMetadata, metadata, peerId: myId } = useLocalPeer<{name: string, image: string}>()
+    // Retrieve local peer data if needed in the future
+    // const { peerId, metadata } = useLocalPeer<Metadata>()
 
-    const [ participants, setParticipants ] = useState<string[]>([myId as string])
+    // Initialize with empty array, we'll add peers once they're available
+    const [ participants, setParticipants ] = useState<string[]>([])
+    
+    // Game state management - integrated with player positions
+    const [gameState, setGameState] = useState<GameState>({
+        currentTurn: '',
+        players: [],
+        turnOrder: []
+    })
 
-    useEffect(() => {
-        if (!roomId) {
-            return;
+    // Handle player positions and data sync
+    useDataMessage({
+        onMessage: (payload: string, from: string, label?: string) => {
+            if (label === 'game-state') {
+                try {
+                    const newState = JSON.parse(payload) as GameState
+                    setGameState(newState)
+                } catch (err) {
+                    console.error("Error parsing game state:", err)
+                }
+            }
+            else if (label === 'player-join') {
+                try {
+                    const playerData = JSON.parse(payload) as {
+                        peerId: string,
+                        walletAddress: string
+                    }
+                    
+                    // Update game state to add the new player
+                    setGameState(prev => {
+                        // If no game state yet, initialize it
+                        const currentState = prev || {
+                            currentTurn: '',
+                            players: [],
+                            turnOrder: []
+                        };
+                        
+                        // If this is the first player to join
+                        if (currentState.players.length === 0) {
+                            return {
+                                currentTurn: playerData.walletAddress, // First player to join gets first turn
+                                players: [{
+                                    peerId: playerData.peerId,
+                                    walletAddress: playerData.walletAddress,
+                                    position: 1, // Start position
+                                    playerNumber: 1  // First player
+                                }],
+                                turnOrder: [playerData.walletAddress]
+                            };
+                        }
+                        
+                        // Check if player already exists
+                        const playerExists = currentState.players.some(p => p.walletAddress === playerData.walletAddress);
+                        if (playerExists) return currentState;
+                        
+                        // Add new player
+                        const newPlayerNumber = currentState.players.length + 1;
+                        const newPlayer = {
+                            peerId: playerData.peerId,
+                            walletAddress: playerData.walletAddress,
+                            position: 1, // Start position
+                            playerNumber: newPlayerNumber
+                        };
+                        
+                        // Update turn order if needed
+                        const newTurnOrder = [...currentState.turnOrder];
+                        if (!newTurnOrder.includes(playerData.walletAddress)) {
+                            newTurnOrder.push(playerData.walletAddress);
+                        }
+                        
+                        // Initialize currentTurn if it's empty
+                        const currentTurn = currentState.currentTurn || playerData.walletAddress;
+                        
+                        return {
+                            ...currentState,
+                            currentTurn,
+                            players: [...currentState.players, newPlayer],
+                            turnOrder: newTurnOrder
+                        };
+                    });
+                } catch (err) {
+                    console.error("Error parsing player join data:", err);
+                }
+            }
+            else if (label === 'player-move') {
+                try {
+                    const moveData = JSON.parse(payload) as {
+                        player: string, 
+                        roll: number,
+                        newPosition: number
+                    }
+                    
+                    // Update game state with the player's new position
+                    setGameState(prev => {
+                        // Use empty game state if prev is somehow null
+                        const currentState = prev || {
+                            currentTurn: '',
+                            players: [],
+                            turnOrder: []
+                        };
+                        
+                        // Normalize the position value to stay within board boundaries (40 positions)
+                        const totalPositions = 40;
+                        const normalizedPosition = ((moveData.newPosition - 1) % totalPositions) + 1;
+                        
+                        const newPlayers = currentState.players.map(p => {
+                            if (p.walletAddress === moveData.player) {
+                                return {...p, position: normalizedPosition}
+                            }
+                            return p
+                        })
+                        
+                        return {...currentState, players: newPlayers}
+                    })
+                } catch (err) {
+                    console.error("Error parsing move data:", err)
+                }
+            }
+            else if (label === 'turn-advance') {
+                try {
+                    const turnData = JSON.parse(payload) as {
+                        nextPlayer: string
+                    }
+                    
+                    // Update game state with the new turn
+                    setGameState(prev => ({
+                        ...prev,
+                        currentTurn: turnData.nextPlayer
+                    }))
+                } catch (err) {
+                    console.error("Error parsing turn data:", err)
+                }
+            }
         }
-    
-        if (state === "connected") {
-            if (metadata?.name) return
-            updateMetadata({
-                name: wallet.address.slice(0, 6) + "..." + wallet.address.slice(-4),
-                image: "https://api.dicebear.com/9.x/identicon/svg?seed=" + wallet.address
-            })
-            return
-        }
-    
-        if (isFetchingToken || isJoiningRoom) {
-            return;
-        }
-    
-        joinRoom().catch((error) => {
-            console.error("Failed to join room", error);
-        });
-        }, [roomId, state, isJoiningRoom, isFetchingToken, joinRoom]);
+    });
 
     useEffect(() => {
         setMounted(true);
@@ -97,15 +221,27 @@ export default function MonopolyBoard() {
     useEffect(() => {
         if (state !== 'connected') return
 
-        let newParticipants = [...participants]
-        for (let id of peerIds) {
+        const newParticipants = [...participants]
+        for (const id of peerIds) {
             if (!newParticipants.includes(id)) {
                 newParticipants.push(id)
             }
         }
         setParticipants(newParticipants)
 
-    }, [state, peerIds])
+    }, [state, peerIds, participants])
+    
+    // Effect to broadcast game state when it changes
+    useEffect(() => {
+        // Only broadcast if we have a valid game state and we're connected
+        if (gameState.players.length > 0 && state === 'connected' && sendData) {
+            sendData({
+                to: '*',
+                payload: JSON.stringify(gameState),
+                label: 'game-state'
+            })
+        }
+    }, [gameState, state, sendData])
 
 
     const renderProperty = (property: Property, index: number) => {
@@ -201,6 +337,18 @@ export default function MonopolyBoard() {
                             </div>
                             {/* Generate all properties */}
                             {MULTIPOLY_PROPERTIES.map((property, index) => renderProperty(property, index))}
+                            
+                            {/* Render player pegs */}
+                            {gameState.players.map(player => (
+                                <PlayerPeg
+                                    key={player.peerId}
+                                    playerId={player.peerId}
+                                    playerNumber={player.playerNumber}
+                                    position={player.position}
+                                    isCurrentPlayer={wallet?.address === player.walletAddress}
+                                    isCurrentTurn={gameState.currentTurn === player.walletAddress}
+                                />
+                            ))}
                         </div>
                     </div>
                     
