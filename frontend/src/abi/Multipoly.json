@@ -877,6 +877,26 @@
                 "internalType": "address",
                 "name": "user_account",
                 "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_1",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_2",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_3",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "token_address_4",
+                "type": "address"
             }
         ],
         "name": "onboardPlayer",
@@ -997,6 +1017,39 @@
     {
         "inputs": [],
         "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "player_address",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "burner_token",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "burn_amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "receiver_token",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "credit_amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "swap",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
