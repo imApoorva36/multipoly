@@ -190,7 +190,6 @@ contract Multipoly is Ownable {
         uint256 game_id,
         address user_account
     ) internal validAddress(user_account) {
-        require(msg.sender == owner(), "Only owner can set turns");
         require(isPlayerInGame[game_id][user_account], "Player not in game");
 
         playerTurns[game_id] = user_account;
