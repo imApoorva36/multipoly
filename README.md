@@ -28,7 +28,7 @@ Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining
 
 ## 🎯 Sponsor Tracks (ETHGlobal New Delhi 2025)
 
-- **Flow Blockchain** → Cadence smart contracts for game mechanics
+- **Flow Blockchain** → Used for deploying smart contracts on the chain of our choice. We utilize Cadence to deploy fungible tokens that enable yield staking mechanics for players. The Flow scheduler module is used for generating yield automatically. Flow also powers decentralized room management and game state persistence. Chainlink VRF is integrated for secure, on-chain dice rolls, ensuring fairness and transparency in gameplay.
 - **ASI Alliance** → AI agents for strategy assistance
 - **ENS** → Decentralized identity integration
 
@@ -57,19 +57,25 @@ _Multipoly combines Web3, AI, and real-time communication in a distributed archi
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ AI, Blockchain & Yield Automation
 
 ### AI & Agents (ASI Alliance)
 
+- **AgentVerse Deployment**: Both the Multipoly Tutor and Multipoly Chatbot agents are publicly deployed on AgentVerse, with dedicated profiles and documentation for each agent.
+- **MeTTa Knowledge Graphs**: The Tutor agent uses MeTTa-powered knowledge graphs to analyze game state and provide strategic recommendations.
+- **uAgents Framework**: Agents were originally built using the uAgents protocol for decentralized agent communication.
+- **REST Endpoints**: For seamless frontend-backend integration, both agents are now exposed via RESTful API endpoints, allowing real-time advice and chat directly from the game interface.
 - **Chatbot Agent**: General help with ASI:One models
 - **Tutor Agent**: Move analysis & strategic advice
 - **Knowledge Graph**: MeTTa-powered game state
 
 ### Blockchain
 
-- **Flow**: Game state persistence, yield tokens, decentralized room management
+- **Flow**: Game state persistence, yield tokens, decentralized room management, and automated yield generation via the Flow scheduler module.
+- **Cadence**: Used for deploying fungible tokens and managing staking mechanics.
+- **VRF**: Integrated for secure, on-chain dice rolls, ensuring fairness and transparency in gameplay.
 - **Ethereum**: ERC-721 NFTs, Hardhat contracts
-- **Chainlink VRF**: Fair dice rolls
+- **ENS**: Used for Ethereum address resolution and human-readable naming throughout the game.
 
 ### Core
 
