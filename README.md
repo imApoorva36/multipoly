@@ -10,9 +10,25 @@ Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining
 
 ---
 
+## 🤖 AgentVerse AI Agents
+
+<div align="center">
+
+<strong>Multipoly Tutor:</strong><br>
+<a href="https://agentverse.ai/agents/details/agent1qv8zynx5ecsheyjzkmjl6pp4a6pz0v5d5f7he09argvzm4qqk4tls0kdswd/profile" target="_blank">https://agentverse.ai/agents/details/agent1qv8zynx5ecsheyjzkmjl6pp4a6pz0v5d5f7he09argvzm4qqk4tls0kdswd/profile</a>
+
+<br><br>
+
+<strong>Multipoly Chatbot:</strong><br>
+<a href="https://agentverse.ai/agents/details/agent1qtyccpkwul3kdmrrud2dm65pdm3kz3s2jvmmmzz8v9dxkx00gmkyzg48kg0/profile" target="_blank">https://agentverse.ai/agents/details/agent1qtyccpkwul3kdmrrud2dm65pdm3kz3s2jvmmmzz8v9dxkx00gmkyzg48kg0/profile</a>
+
+</div>
+
+---
+
 ## 🎯 Sponsor Tracks (ETHGlobal New Delhi 2025)
 
-- **Flow Blockchain** → Cadence smart contracts for game mechanics
+- **Flow Blockchain** → Used for deploying smart contracts on the chain of our choice. We utilize Cadence to deploy fungible tokens that enable yield staking mechanics for players. The Flow scheduler module is used for generating yield automatically. Flow also powers decentralized room management and game state persistence. Chainlink VRF is integrated for secure, on-chain dice rolls, ensuring fairness and transparency in gameplay.
 - **ASI Alliance** → AI agents for strategy assistance
 - **ENS** → Decentralized identity integration
 
@@ -41,19 +57,25 @@ _Multipoly combines Web3, AI, and real-time communication in a distributed archi
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ AI, Blockchain & Yield Automation
 
 ### AI & Agents (ASI Alliance)
 
+- **AgentVerse Deployment**: Both the Multipoly Tutor and Multipoly Chatbot agents are publicly deployed on AgentVerse, with dedicated profiles and documentation for each agent.
+- **MeTTa Knowledge Graphs**: The Tutor agent uses MeTTa-powered knowledge graphs to analyze game state and provide strategic recommendations.
+- **uAgents Framework**: Agents were originally built using the uAgents protocol for decentralized agent communication.
+- **REST Endpoints**: For seamless frontend-backend integration, both agents are now exposed via RESTful API endpoints, allowing real-time advice and chat directly from the game interface.
 - **Chatbot Agent**: General help with ASI:One models
 - **Tutor Agent**: Move analysis & strategic advice
 - **Knowledge Graph**: MeTTa-powered game state
 
 ### Blockchain
 
-- **Flow**: Game state persistence, yield tokens, decentralized room management
+- **Flow**: Game state persistence, yield tokens, decentralized room management, and automated yield generation via the Flow scheduler module.
+- **Cadence**: Used for deploying fungible tokens and managing staking mechanics.
+- **VRF**: Integrated for secure, on-chain dice rolls, ensuring fairness and transparency in gameplay.
 - **Ethereum**: ERC-721 NFTs, Hardhat contracts
-- **Chainlink VRF**: Fair dice rolls
+- **ENS**: Used for Ethereum address resolution and human-readable naming throughout the game.
 
 ### Core
 
@@ -188,12 +210,12 @@ multipoly/
 
 ## 👥 Team
 
-| Name                | GitHub                                           | Role                         |
-| ------------------- | ------------------------------------------------ | ---------------------------- |
-| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) | Smart Contracts & Full-Stack |
-| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   | AI Agents & Backend          |
-| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) | Frontend & UI/UX             |
-| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   | Blockchain & VRF             |
+| Name                | GitHub                                           |
+| ------------------- | ------------------------------------------------ |
+| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) |
+| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   |
+| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) |
+| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   |
 
 ---
 
