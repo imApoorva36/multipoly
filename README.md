@@ -5,32 +5,65 @@
 ## 🌟 Overview
 
 Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining **AI agents**, **NFT properties**, and **real-time strategy gameplay**. Players explore 24 iconic Delhi locations, collect themed tokens, and build their property empires with **Web3** mechanics and **AI-powered assistance**.
+![ac2cd92f-6396-4f13-af86-c56139fcc8c7](https://github.com/user-attachments/assets/fc7be496-fc57-4fa4-8f6d-0085bee8cc86)
 
 **🌐 Live Demo**: [https://multipoly.onrender.com](https://multipoly.onrender.com)
 
 ---
 
-## 🤖 AgentVerse AI Agents
+## 🎯 Sponsor Tracks (ETHGlobal New Delhi 2025)
 
-<div align="center">
+## Flow Blockchain Integration  
+Multipoly fully harnesses the **Flow ecosystem** to deliver scalable, transparent, and interactive Web3 gameplay. Core mechanics are deployed in **Cadence**, managing fungible tokens, staking, and yield generation through the **Flow Scheduler**. Decentralized room management ensures fair multiplayer sessions, while **Chainlink VRF** provides secure on-chain randomness for dice rolls. With additional **Flow EVM compatibility**, Multipoly seamlessly combines **Cadence and Solidity contracts** within the same ecosystem.  
 
-<strong>Multipoly Tutor:</strong><br>
-<a href="https://agentverse.ai/agents/details/agent1qv8zynx5ecsheyjzkmjl6pp4a6pz0v5d5f7he09argvzm4qqk4tls0kdswd/profile" target="_blank">https://agentverse.ai/agents/details/agent1qv8zynx5ecsheyjzkmjl6pp4a6pz0v5d5f7he09argvzm4qqk4tls0kdswd/profile</a>
+---
+ 
+1. **Smart Contract Deployment**  
+   - Core gameplay mechanics are deployed on **Flow’s native chain**.  
+   - Contracts are written in **Cadence** to handle fungible tokens, staking, and state persistence.  
 
-<br><br>
+2. **Fungible Tokens & Yield Staking**  
+   - Players can **earn and stake tokens** seamlessly during gameplay.  
+   - **Flow Scheduler** automates yield simulation, enabling a dynamic in-game economy.  
 
-<strong>Multipoly Chatbot:</strong><br>
-<a href="https://agentverse.ai/agents/details/agent1qtyccpkwul3kdmrrud2dm65pdm3kz3s2jvmmmzz8v9dxkx00gmkyzg48kg0/profile" target="_blank">https://agentverse.ai/agents/details/agent1qtyccpkwul3kdmrrud2dm65pdm3kz3s2jvmmmzz8v9dxkx00gmkyzg48kg0/profile</a>
+3. **Educational Game Mechanics**  
+   - **Decentralized room management** ensures transparent and fair multiplayer sessions.  
+   - **On-chain randomness (VRF)** secures dice rolls, guaranteeing fairness and transparency.  
 
-</div>
+4. **Flow EVM Compatibility**  
+   - Core **Solidity contracts** are deployed on **Flow EVM**, extending interoperability.  
+   - This allows **Cadence and Solidity contracts** to co-exist and complement each other within the Flow ecosystem.  
+
+
+## 🤖 ASI Alliance Integration   
+Multipoly integrates the **ASI agent ecosystem** end-to-end. Our **AI Tutor** and **Chatbot** are live on **AgentVerse**, powered by **MeTTa knowledge graphs** for strategic gameplay analysis. Communication runs on the **uAgents protocol**, with agents exposed via **RESTful endpoints** to deliver seamless, real-time advice and chat directly in-game. This creates a **full-circle ASI integration**, combining multiple agents, decentralized communication, and transparent public deployment.  
 
 ---
 
-## 🎯 Sponsor Tracks (ETHGlobal New Delhi 2025)
+1. **Agent Deployment** → AI Tutor & Chatbot deployed on AgentVerse with public profiles and documentation.  
+2. **Strategic Intelligence** → MeTTa knowledge graphs power gameplay analysis and strategic advice.  
+3. **Decentralized Communication** → uAgents protocol ensures secure and decentralized agent interactions.  
+4. **REST Endpoints** → Agents exposed as REST APIs for seamless frontend–backend integration.  
+5. **Full-Circle Use Case** → Combines multiple agents, MeTTa graphs, REST APIs, and decentralized deployment into a complete ASI showcase.  
 
-- **Flow Blockchain** → Used for deploying smart contracts on the chain of our choice. We utilize Cadence to deploy fungible tokens that enable yield staking mechanics for players. The Flow scheduler module is used for generating yield automatically. Flow also powers decentralized room management and game state persistence. Chainlink VRF is integrated for secure, on-chain dice rolls, ensuring fairness and transparency in gameplay.
-- **ASI Alliance** → AI agents for strategy assistance
-- **ENS** → Decentralized identity integration
+## 🔗 ENS Integration  
+
+Multipoly integrates **Ethereum Name Service (ENS)** to simplify wallet interactions with **human-readable names**. This makes gameplay more intuitive and secure, while showcasing a **real-world application of ENS** in a multiplayer Web3 gaming environment.  
+
+---
+
+1. **Human-Readable Naming**  
+   - ENS replaces long Ethereum addresses with **easy-to-read names**.  
+   - Enhances accessibility and usability for players.  
+
+2. **Seamless Wallet Interactions**  
+   - Simplifies deposits, transfers, and staking with **intuitive identifiers**.  
+   - Reduces user errors and improves the onboarding experience.  
+
+3. **Practical Adoption in Gaming**  
+   - ENS is fully integrated into **multiplayer room sessions**.  
+   - Demonstrates how Web3 naming systems can be **applied in real-world gaming scenarios**.  
+
 
 ---
 
@@ -57,7 +90,7 @@ _Multipoly combines Web3, AI, and real-time communication in a distributed archi
 
 ---
 
-## 🛠️ AI, Blockchain & Yield Automation
+## 🛠️ Tech Stack
 
 ### AI & Agents (ASI Alliance)
 
@@ -68,6 +101,15 @@ _Multipoly combines Web3, AI, and real-time communication in a distributed archi
 - **Chatbot Agent**: General help with ASI:One models
 - **Tutor Agent**: Move analysis & strategic advice
 - **Knowledge Graph**: MeTTa-powered game state
+<div align="left">
+
+<strong>Multipoly Tutor:</strong> 
+<a href="https://agentverse.ai/agents/details/agent1qv8zynx5ecsheyjzkmjl6pp4a6pz0v5d5f7he09argvzm4qqk4tls0kdswd/profile" target="_blank">MultiPoly Tutor</a>
+
+<strong>Multipoly Chatbot:</strong> 
+<a href="https://agentverse.ai/agents/details/agent1qtyccpkwul3kdmrrud2dm65pdm3kz3s2jvmmmzz8v9dxkx00gmkyzg48kg0/profile" target="_blank">Multipoly Chatbot</a>
+
+</div>
 
 ### Blockchain
 
@@ -186,8 +228,8 @@ POST https://multipoly.onrender.com/api/advise
 
 ### Core Mechanics
 
-- **Starting Cash**: ₹2,000
-- **Property Prices**: ₹100–₹800
+- **Starting Cash**: 100 Units of each token
+- **Property Prices**: 20-50 Units
 - **Turn**: Roll dice → Move → Buy/Pay → Collect tokens
 - **Special Cards**: Delhi Metro (travel), Traffic Jam, Monsoon, Festival Bonus
 
