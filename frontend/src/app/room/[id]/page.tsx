@@ -84,6 +84,7 @@ export default function RoomPage() {
   const router = useRouter();
   const [newMessage, setNewMessage] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [ onboarded, setOnboarded ] = useState(false)
 
   const { wallets } = useWallets();
   const wallet = wallets[0];
@@ -136,12 +137,11 @@ export default function RoomPage() {
           account: wallet.address as Hex,
           address: process.env.NEXT_PUBLIC_MULTIPOLY as Hex,
           abi: MultipolyAbi,
-          functionName: "mintAllTokens",
-          args: [wallet.address as Hex, process.env.NEXT_PUBLIC_AMETHYST as Hex, process.env.NEXT_PUBLIC_EMRALD as Hex, process.env.NEXT_PUBLIC_GOLDEN as Hex, process.env.NEXT_PUBLIC_RUBY as Hex],
-          gasPrice: BigInt(200_000_000_000),
+          functionName: "onboardPlayer",
+          args: [string_to_num(roomId || ""), wallet.address as Hex, process.env.NEXT_PUBLIC_AMETHYST as Hex, process.env.NEXT_PUBLIC_EMRALD as Hex, process.env.NEXT_PUBLIC_GOLDEN as Hex, process.env.NEXT_PUBLIC_RUBY as Hex],
         })
-        console.log(tx)
       }
+      setOnboarded(true)
     }
 
     getGameState()
@@ -192,6 +192,8 @@ export default function RoomPage() {
   };
 
   function startGame () {
+    if (!onboarded) return
+    
     sendData({
       to: "*",
       payload: "<lets start>",
@@ -254,6 +256,7 @@ export default function RoomPage() {
                 localPeerMetadata={metadata || undefined}
                 connectionState={state || "disconnected"}
                 startGame={startGame}
+                onboarded={onboarded}
               />
             </div>
           </div>

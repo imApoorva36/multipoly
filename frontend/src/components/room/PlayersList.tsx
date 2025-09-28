@@ -21,10 +21,11 @@ interface PlayersListProps {
   peerIds: string[];
   localPeerMetadata?: Metadata;
   connectionState: string;
-  startGame: () => void
+  startGame: () => void;
+  onboarded: boolean;
 }
 
-export function PlayersList({ peerIds, localPeerMetadata, startGame }: PlayersListProps) {
+export function PlayersList({ peerIds, localPeerMetadata, startGame, onboarded }: PlayersListProps) {
   const totalPlayers = peerIds.length + 1;
 
     const [ tokensAdded, setTokensAdded ] = useState(false)
@@ -112,8 +113,9 @@ export function PlayersList({ peerIds, localPeerMetadata, startGame }: PlayersLi
               ))}
               <Button
                 size="lg"
-                className="bg-mgreen hover:bg-mgreen/80 text-white border-2 border-black rounded-none w-full py-6 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+                className={`${onboarded ? "bg-mgreen hover:bg-mgreen/80" : "bg-mgreen/70"} text-white border-2 border-black rounded-none w-full py-6 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300`}
                 onClick={startGame}
+                disabled={!onboarded}
               >
                 Get Started
               </Button>
@@ -124,7 +126,7 @@ export function PlayersList({ peerIds, localPeerMetadata, startGame }: PlayersLi
                 <UserIcon className="h-8 w-8 text-slate-400" />
               </div>
               <p className="text-lg font-semibold text-slate-600 mb-1">Waiting for players</p>
-              <p className="text-sm text-slate-500">Other players will appear here when they join</p>
+              <p className="text-sm text-slate-500">You need atleast 2 players to start a game</p>
             </div>
           )}
         </div>
