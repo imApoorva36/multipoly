@@ -4,10 +4,10 @@ import ReactMarkdown from "react-markdown"
 import { BotMessageSquare } from "lucide-react"
 
 interface ASIHelpSectionProps {
-  getGameState: () => any;
+  getGameState: () => unknown;
 }
 
-export default function ASIHelpSection({ getGameState }: ASIHelpSectionProps) {
+export default function ASIHelpSection({  }: ASIHelpSectionProps) {
   const [chatInput, setChatInput] = useState("");
   const [response, setResponse] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
@@ -24,7 +24,7 @@ export default function ASIHelpSection({ getGameState }: ASIHelpSectionProps) {
       });
       const data = await res.json();
       setResponse(data.reply || "No response");
-    } catch (e) {
+    } catch {
       setResponse("Error contacting AI");
     }
     setChatLoading(false);
@@ -58,7 +58,7 @@ export default function ASIHelpSection({ getGameState }: ASIHelpSectionProps) {
       });
       const data = await res.json();
       setResponse(data.advice || "No response");
-    } catch (e) {
+    } catch {
       setResponse("Error contacting AI");
     }
     setHelpLoading(false);

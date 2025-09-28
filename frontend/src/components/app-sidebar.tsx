@@ -11,7 +11,6 @@ import ChatSection from "./sidebar/chat"
 import PlayersSection from "./sidebar/players"
 import PlaySection from "./sidebar/play"
 import ASIHelpSection from "./sidebar/ASIHelpSection"
-import { WalletClient } from "viem"
 import { ChatMessage } from "@/hooks/useHuddleRoom"
 
 const items = [
@@ -33,24 +32,6 @@ const items = [
   }
 ]
 
-
-const NFTsSection = () => (
-  <div className="p-4 space-y-4">
-    <h3 className="text-lg font-semibold">NFTs</h3>
-    <div className="space-y-2">
-      <div className="p-3 border rounded">
-        <div className="font-medium">Property Token #1</div>
-        <div className="text-sm text-gray-600">Boardwalk Property</div>
-        <div className="text-sm text-green-600">Owned</div>
-      </div>
-      <div className="p-3 border rounded">
-        <div className="font-medium">Property Token #2</div>
-        <div className="text-sm text-gray-600">Park Place</div>
-        <div className="text-sm text-blue-600">Available</div>
-      </div>
-    </div>
-  </div>
-)
 
 // ...removed static ASIHelpSection...
 

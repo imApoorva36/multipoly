@@ -1,4 +1,4 @@
-import { ChatMessage, useHuddleRoom } from "@/hooks/useHuddleRoom"
+import { ChatMessage } from "@/hooks/useHuddleRoom"
 import { Button } from "../ui/button"
 import { useParams } from "next/navigation"
 import { Metadata } from "@/app/room/[id]/page"
@@ -6,22 +6,15 @@ import { useLocalPeer, useRemotePeer } from "@huddle01/react"
 import { Badge } from "../ui/badge"
 import { ChatBubbleLeftIcon } from "@heroicons/react/16/solid"
 import { Input } from "../ui/input"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useWallets } from "@privy-io/react-auth"
 
 
 
 // Tab content components
-export default function ChatSection ({ sendMessage, messages, state, isSendingMessage } : { sendMessage: (msg: string) => Promise<void>, messages: ChatMessage[], state: string, isSendingMessage: boolean }) {
-
-    const params = useParams<{ id: string }>();
-    const roomId = params.id
-    
-    const { updateMetadata, metadata, peerId } = useLocalPeer<Metadata>()
+export default function ChatSection ({ sendMessage, messages, state, isSendingMessage } : { sendMessage: (msg: string) => Promise<void>, messages: ChatMessage[], state: string, isSendingMessage: boolean }) {    
+    const { peerId } = useLocalPeer<Metadata>()
     const [newMessage, setNewMessage] = useState("");
-
-    const {wallets} = useWallets()
-    const wallet = wallets[0]
 
       
 

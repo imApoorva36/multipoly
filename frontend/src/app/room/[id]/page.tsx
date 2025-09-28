@@ -126,7 +126,7 @@ export default function RoomPage() {
         args: [string_to_num(roomId || ""), wallet.address]
       }) as [PlayerPos[], PlayerProperty[]]
 
-      const [ positions, properties ] = data
+      const [ positions ] = data
       if (positions.length == 0 || !positions.find(p => p.user_account.toLowerCase() === (wallet.address || "").toLowerCase())) {
         if (!walletClient) return
         
@@ -146,7 +146,7 @@ export default function RoomPage() {
 
     getGameState()
     
-  }, [ walletClient])
+  }, [ walletClient, publicClient, wallet, roomId ])
 
   // Auto-join room and set metadata
   useEffect(() => {
