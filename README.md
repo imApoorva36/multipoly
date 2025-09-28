@@ -210,12 +210,12 @@ multipoly/
 
 ## 👥 Team
 
-| Name                | GitHub                                           | Role                         |
-| ------------------- | ------------------------------------------------ | ---------------------------- |
-| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) | Smart Contracts & Full-Stack |
-| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   | AI Agents & Backend          |
-| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) | Frontend & UI/UX             |
-| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   | Blockchain & VRF             |
+| Name                | GitHub                                           |
+| ------------------- | ------------------------------------------------ |
+| **Fahim Ahmed**     | [@ahmedfahim21](https://github.com/ahmedfahim21) |
+| **Apoorva Agrawal** | [@imApoorva36](https://github.com/imApoorva36)   |
+| **Vedant Tarale**   | [@VedantTarale](https://github.com/VedantTarale) |
+| **J Hariharan**     | [@j-hariharan](https://github.com/j-hariharan)   |
 
 ---
 
