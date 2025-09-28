@@ -10,6 +10,22 @@ Multipoly is a blockchain-powered multiplayer board game set in Delhi, combining
 
 ---
 
+## 🤖 AgentVerse AI Agents
+
+<div align="center">
+
+<strong>Multipoly Tutor:</strong><br>
+<a href="https://agentverse.ai/agents/details/agent1qv8zynx5ecsheyjzkmjl6pp4a6pz0v5d5f7he09argvzm4qqk4tls0kdswd/profile" target="_blank">https://agentverse.ai/agents/details/agent1qv8zynx5ecsheyjzkmjl6pp4a6pz0v5d5f7he09argvzm4qqk4tls0kdswd/profile</a>
+
+<br><br>
+
+<strong>Multipoly Chatbot:</strong><br>
+<a href="https://agentverse.ai/agents/details/agent1qtyccpkwul3kdmrrud2dm65pdm3kz3s2jvmmmzz8v9dxkx00gmkyzg48kg0/profile" target="_blank">https://agentverse.ai/agents/details/agent1qtyccpkwul3kdmrrud2dm65pdm3kz3s2jvmmmzz8v9dxkx00gmkyzg48kg0/profile</a>
+
+</div>
+
+---
+
 ## 🎯 Sponsor Tracks (ETHGlobal New Delhi 2025)
 
 - **Flow Blockchain** → Cadence smart contracts for game mechanics
