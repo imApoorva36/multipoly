@@ -411,7 +411,7 @@ contract Multipoly is Ownable {
         address token_address_2,
         address token_address_3,
         address token_address_4
-    ) external {
+    ) public {
         require(
             token_address_1 != address(0) &&
                 token_address_2 != address(0) &&
@@ -471,6 +471,11 @@ contract Multipoly is Ownable {
         IERC20(token_address).mint(player_address, amount);
     }
 
+    function swap(address player_address, address burner_token, uint256 burn_amount, address receiver_token, uint256 credit_amount) external {
+        debit(player_address, burner_token, burn_amount);
+        credit(player_address, receiver_token, credit_amount);
+    }
+
     // NFT functions
     function purchaseProperty(
         address player_address,
@@ -503,10 +508,24 @@ contract Multipoly is Ownable {
     // Helper Functions
 
     // Sets up a new player in a game with default position and set the turm to be theirs
-    function onboardPlayer(uint256 game_id, address user_account) external {
+    function onboardPlayer(
+        uint256 game_id,
+        address user_account,
+        address token_address_1,
+        address token_address_2,
+        address token_address_3,
+        address token_address_4
+    ) external {
         _addPlayerToGame(game_id, user_account);
         setPlayerPosition(game_id, user_account, 0);
         setPlayerTurn(game_id, user_account);
+        mintAllTokens(
+            user_account,
+            token_address_1,
+            token_address_2,
+            token_address_3,
+            token_address_4
+        );
     }
 
     function move(
@@ -574,9 +593,6 @@ contract Multipoly is Ownable {
             game_id,
             user_account
         );
-        return (
-            positions,
-            user_props
-        );
+        return (positions, user_props);
     }
 }
